@@ -1,0 +1,7 @@
+{
+  "packages": [
+    "packages/frontend",
+    "packages/mirai-reactivity-ws"
+  ],
+  "version": "0.0.0"
+}

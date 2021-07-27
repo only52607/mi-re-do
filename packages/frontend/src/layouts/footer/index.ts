@@ -1,0 +1,1 @@
+export { default as GlobalFooter } from "./GlobalFooter.vue"
