@@ -9,23 +9,27 @@
             />
         </a-col>
         <a-col :span="16" style="height:100%;">
-            <member-screen :member-list="members" :loading="memberlistState!='done'"></member-screen>
+            <member-details :group="group" :member-list="members" :loading="memberlistState!='done'" />
         </a-col>
     </a-row>
 </template>
-    
+
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
-import GroupList from "@/components/chat/GroupList.vue"
+import GroupList from "@/components/list/GroupList.vue"
 import { useMemberList, useGroups } from "mirai-reactivity-ws";
-import MemberScreen from "@/components/chat/MemberScreen.vue"
+import MemberDetails from "@/views/group/MemberDetails.vue"
 
 const selectedKeys = ref([]);
 const { groups, state: groupsState } = useGroups();
 const selectedGroupId = computed(() => {
-    if (!groups || selectedKeys.value.length == 0) return 0;
+    if (!groups || selectedKeys.value.length == 0) return;
     return selectedKeys.value[0]
 });
+const group = computed(() => { 
+    if (!selectedGroupId || !groups.value) return;
+    return groups.value.find((group) =>  group.id == selectedGroupId.value )
+})
 const { members, state: memberlistState, emitUpdate } = useMemberList(selectedGroupId);
 onMounted(() => emitUpdate())
 

@@ -4,16 +4,16 @@
       <friend-list :loading="friendsState!='done'" style="height:100%;" :friend-list="friends" v-model:selectedKeys="selectedKeys" />
     </a-col>
     <a-col :span="16" style="height:100%; overflow:auto;">
-    <user-profile :id="selectedFriendId" :loading="profileState!='done'" :profile="profile" style="width:100%; height:100%;" ></user-profile>
+    <friend-details :id="selectedFriendId" :loading="profileState!='done'" :profile="profile" style="width:100%; height:100%;" />
     </a-col>
   </a-row>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch, watchEffect } from "vue";
-import FriendList from "@/components/chat/FriendList.vue"
-import { useFriendProfile, useFriends, useMiraiApi } from "mirai-reactivity-ws";
-import UserProfile from "@/components/chat/UserProfile.vue"
+import { computed, onMounted, ref } from "vue";
+import FriendList from "@/components/list/FriendList.vue"
+import { useFriendProfile, useFriends } from "mirai-reactivity-ws";
+import FriendDetails from "@/views/friend/FriendDetails.vue"
 
 const selectedKeys = ref([]);
 const { friends, state: friendsState } = useFriends();

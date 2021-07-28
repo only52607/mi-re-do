@@ -1,4 +1,4 @@
-import { BaseLayout, SimpleLayout, PageHeaderLayout, BlankLayout } from '@/layouts'
+import { BaseLayout } from '@/layouts'
 
 import {
   DesktopOutlined,
@@ -70,23 +70,6 @@ const menuRoute =  {
   ],
 }
 
-const authRoute:RouteRecordRaw =  {
-  path: '/user/auth',
-  component: SimpleLayout,
-  name: "auth",
-  redirect: '/user/auth',
-  meta:{
-    hiddien: true
-  },
-  children: [
-    {
-      path: 'login',
-      name: "auth",
-      component: () => import('@/views/login/login.vue'),
-    },
-  ]
-}
-
 const testRoutes:RouteRecordRaw[] = [
   {
     path: '/test',
@@ -97,6 +80,6 @@ const testRoutes:RouteRecordRaw[] = [
   }
 ]
 
-export const routes:RouteRecordRaw[] = [menuRoute, authRoute, ...testRoutes]
+export const routes:RouteRecordRaw[] = [menuRoute]
 
 export default routes

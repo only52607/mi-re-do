@@ -1,9 +1,9 @@
 <template>
     <a-dropdown>
         <span id="user-dropdown-title">
-            <a-avatar id="avatar" size="small"
-            >{{ bot?.nickname }}</a-avatar>
             {{ bot?.nickname ?? "未连接" }}
+            <a-divider type="vertical" />
+            <user-avatar size="small" :user-id="botId ?? 0" :nickname="bot?.nickname"/>
         </span>
         <template #overlay>
             <a-menu>
@@ -29,10 +29,12 @@
 <script setup lang="ts" >
 import { defineEmits, defineProps } from "vue";
 import { ProfileFilled, ApiFilled } from "@ant-design/icons-vue";
-import type { BotProfile, Optional } from "@vue/reactivity/../mirai-reactivity-ws/dist";
+import type { BotProfile, Optional } from "mirai-reactivity-ws";
+import UserAvatar from "@/components/info/UserAvatar.vue"
 
 defineProps<{
-    bot: Optional<BotProfile>
+    bot: Optional<BotProfile>,
+    botId: Optional<number>
 }>()
 defineEmits(['menu-select'])
 

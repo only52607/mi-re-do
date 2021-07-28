@@ -4,7 +4,7 @@ import EditableCell from "./EditableCell.vue"
 import MenuSwitch from "./MenuSwitch.vue"
 import RouterLinkIcon from "./RouterLinkIcon.vue"
 import SpanIcon from "./SpanIcon.vue"
-import ImageModal from "./ImageModal.vue"
+import ImageModal from "./modal/ImageModal.vue"
 
 export default {
     install(app: App, ...options: any[]) {

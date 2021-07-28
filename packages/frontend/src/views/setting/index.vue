@@ -1,5 +1,5 @@
 <template>
-  
+  <a-empty />
 </template>
 
 <script setup lang="ts">

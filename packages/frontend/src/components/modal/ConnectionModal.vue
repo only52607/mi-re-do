@@ -2,7 +2,7 @@
     <a-modal title="连接到 MiraiConsole" v-bind="$attrs" :visible="visible" :footer="null">
         <a-form :rules="rules" :model="connectInfo" ref="formRef">
             <a-form-item label="通道">
-                <a-input v-model:value="connectInfo.address">
+                <a-input v-model:value="connectInfo.host">
                     <template #addonBefore>ws://</template>
                     <template #addonAfter>
                         <a-select v-model:value="connectInfo.channel">
@@ -32,7 +32,7 @@ import { message } from "ant-design-vue";
 import { ref } from "vue";
 
 const connectInfo = reactive({
-    address: "127.0.0.1:8082",
+    host: "127.0.0.1:8082",
     channel: "all",
     verifyKey: "1234567890",
     qq: ""
@@ -70,7 +70,7 @@ function onClickConnect() {
         .validate()
         .then(() => {
             emit("connect", {
-                address: `ws://${connectInfo.address}/${connectInfo.channel}`,
+                address: `ws://${connectInfo.host}/${connectInfo.channel}`,
                 verifyKey:connectInfo.verifyKey,
                 qq:connectInfo.qq
             })

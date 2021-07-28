@@ -7,13 +7,14 @@
 -->
 <template>
     <a-menu mode="inline">
-        <a-spin v-if="!groupList"/>
+        <a-empty v-if="!friendList" />
+        <a-spin v-else-if="loading" />
         <template v-else>
-            <a-menu-item v-for="(group, i) in groupList" :key="group.id" >
+            <a-menu-item v-for="(friend, i) in friendList" :key="friend.id" >
                 <template #icon>
-                    <a-avatar>{{ group.name }}</a-avatar>
+                    <user-avatar :user-id="friend.id" :nickname="friend.nickname" />
                 </template>
-                {{ `${group.name}(${group.id})` }}
+                {{ friend.remark }}
             </a-menu-item>
         </template>
     </a-menu>
@@ -21,11 +22,12 @@
 
 <script setup lang="ts">
 import { defineProps } from 'vue';
-import type { Group } from "mirai-reactivity-ws"
+import type { Friend } from "mirai-reactivity-ws"
 import type { Optional } from '@/types/utility';
+import UserAvatar from "@/components/info/UserAvatar.vue"
 
 defineProps<{
-    groupList: Optional<Group[]>,
+    friendList: Optional<Friend[]>,
     loading: boolean
 }>()
 

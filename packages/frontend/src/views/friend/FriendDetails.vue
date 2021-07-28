@@ -6,39 +6,21 @@
  * @LastEditTime: 2021-02-27 20:58:59
 -->
 <template>
-    <a-spin v-if="loading || !profile" />
+    <a-empty v-if="!profile" />
+    <a-spin v-else-if="loading" />
     <template v-else>
         <a-card :loading="loading">
             <template #cover>
-                <!-- <div style="height: 100px;">
-                    <img
-                    alt="example"
-                    src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-                    style="width: 100%;"
-                />
-                </div> -->
             </template>
             <a-card-meta :title="profile.nickname" :description="profile.sign">
                 <template #avatar>
-                    <a-avatar>{{ profile.nickname }}</a-avatar>
+                    <user-avatar :user-id="id" :nickname="profile.nickname"/>
                 </template>
             </a-card-meta>
             <a-divider></a-divider>
             <a-row>
                 <a-col :span="20">
-                    <a-descriptions>
-                        <a-descriptions-item
-                            label="ID"
-                            span="24"
-                        >{{ id }}</a-descriptions-item>
-                        <a-descriptions-item
-                            label="性别"
-                            span="24"
-                        >{{ profile.sex == "FEMALE" ? "女" : profile.sex == "MALE" ? "男" : "未知" }}</a-descriptions-item>
-                        <a-descriptions-item label="等级" span="24">{{ profile.level }}</a-descriptions-item>
-                        <a-descriptions-item label="年龄" span="24">{{ profile.age }}</a-descriptions-item>
-                        <a-descriptions-item label="邮箱" span="24">{{ profile.email }}</a-descriptions-item>
-                    </a-descriptions>
+                    <user-description :user-id="id" :profile="profile" />
                 </a-col>
             </a-row>
 
@@ -61,6 +43,8 @@
 import { defineEmits, defineProps } from 'vue';
 import type { UserProfile } from "mirai-reactivity-ws"
 import type { Optional } from '@/types/utility';
+import UserAvatar from "@/components/info/UserAvatar.vue"
+import UserDescription from "@/components/info/UserDescription.vue"
 
 const props = defineProps<{
     profile: Optional<UserProfile>,

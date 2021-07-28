@@ -8,7 +8,7 @@
       <a-layout-header id="header">
         <menu-switch v-model:collapsed="collapsed" />
         <span>{{ route.meta.title }}</span>
-        <bot-dropdown :bot="botProfile" @menu-select="onMenuSelect" />
+        <bot-dropdown :bot-id="connectionInfo?.authentication?.qq" :bot="botProfile" @menu-select="onMenuSelect" />
       </a-layout-header>
       <a-layout-content id="content">
         <router-view />
@@ -20,6 +20,13 @@
       @connect="connect"
       @cancel="cancelModal"
     ></connection-modal>
+    <bot-profile-modal 
+      :visible="botprofileModalVisible" 
+      :bot-id="connectionInfo?.authentication?.qq"
+      :bot="botProfile"
+      @cancel="() => botprofileModalVisible = false"
+    />
+      
   </a-layout>
 </template>
 <script setup lang="ts">
@@ -29,20 +36,22 @@ import { useRoute, useRouter } from "vue-router";
 import { routes } from "@/router"
 import { createMiraiWebsocketApi, setDefaultMiraiApi, useBotProfile, useMiraiApi } from "mirai-reactivity-ws";
 import BotDropdown from "@/components/BotDropdown.vue"
-import ConnectionModal from "@/components/ConnectionModal.vue"
+import ConnectionModal from "@/components/modal/ConnectionModal.vue"
 import { message, notification } from "ant-design-vue";
 import { onMounted, watch } from "@vue/runtime-core";
+import { useConnectionInfo } from "@/use";
+import BotProfileModal from "@/components/modal/BotProfileModal.vue"
 
 const { botProfile } = useBotProfile()
+const connectionInfo = useConnectionInfo()
+let hideLoadingToast: () => void | undefined
 ref: connectionModalVisible = false
+ref: botprofileModalVisible = false
 const router = useRouter()
 const route = useRoute()
 ref: collapsed = true
 ref: connecting = false
 const miraiApi = useMiraiApi()
-const storeKey = "mirai-console-websocket"
-
-let hideLoadingToast: () => void | undefined
 
 watch(() => connecting, () => {
   if (!connecting && hideLoadingToast) {
@@ -61,16 +70,22 @@ function showConnectModal() {
   }
 }
 
+function cancelModal() {
+  if (miraiApi.value) {
+    connectionModalVisible = false
+  } else {
+    message.warning("请先连接到服务器")
+  }
+}
+
 onMounted(async () => {
-  const connectInfoString = localStorage.getItem(storeKey)
-  if (!connectInfoString) {
+  if (!connectionInfo.value) {
     showConnectModal()
     return
   }
-  const connectInfoObj = JSON.parse(connectInfoString)
   try {
     connecting = true
-    const { api } = await createMiraiWebsocketApi(connectInfoObj)
+    const { api } = await createMiraiWebsocketApi(connectionInfo.value)
     setDefaultMiraiApi(api)
     connectionModalVisible = false
     notification.success({
@@ -91,7 +106,7 @@ async function onMenuSelect(itemName: string) {
       connectionModalVisible = true
       break
     case "show-profile":
-      router.replace({ path: '/' })
+      botprofileModalVisible = true
       break
   }
 }
@@ -109,7 +124,7 @@ async function connect(connectInfo: any) {
     notification.success({
       message: "连接到websocket服务器成功"
     })
-    localStorage.setItem(storeKey, JSON.stringify(param))
+    connectionInfo.value = param  // 保存信息
   } catch (e) {
     const reason = e?.message ?? ""
     message.error(`连接websocket服务器失败!  ${reason}`)
@@ -117,13 +132,7 @@ async function connect(connectInfo: any) {
   connecting = false
 }
 
-function cancelModal() {
-  if (miraiApi.value) {
-    connectionModalVisible = false
-  } else {
-    message.warning("请先连接到服务器")
-  }
-}
+
 
 </script>
 
