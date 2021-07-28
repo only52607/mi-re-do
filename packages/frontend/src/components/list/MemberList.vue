@@ -12,7 +12,7 @@
                 <a-popover trigger="click">
                     <template #content>
                         <p>{{ member.memberName }}</p>
-                        <p>{{ member.permission == "OWNER" ? "群主" : member.permission == "MEMBER" ? "群成员" : "管理员" }}</p>
+                        <p> <member-tag :member="member" /> </p>
                         <a-divider></a-divider>
                         <a-button
                             type="primary"
@@ -30,13 +30,7 @@
                             <span
                                 style="overflow: hidden; text-overflow:ellipsis; white-space: nowrap;"
                             >
-                                <a-tag v-if="member.permission == 'OWNER'" color="orange">群主</a-tag>
-                                <a-tag v-if="member.permission == 'ADMINISTRATOR'" color="green">管理员</a-tag>
-                                <a-tag
-                                    v-if="member.specialTitle != undefined && member.specialTitle.length > 0"
-                                    color="blue"
-                                >{{ member.specialTitle }}</a-tag>
-                                {{ member.memberName }}
+                            <member-tag :member="member" /> {{ member.memberName }}
                             </span>
                         </div>
                     </a-card>
@@ -52,6 +46,7 @@ import { defineProps } from 'vue';
 import type { Member } from "mirai-reactivity-ws"
 import type { Optional } from '@/types/utility';
 import UserAvatar from "@/components/info/UserAvatar.vue"
+import MemberTag from "@/components/info/MemberTag.vue"
 
 defineProps<{
     memberList: Optional<Member[]>,

@@ -8,7 +8,11 @@
       <a-layout-header id="header">
         <menu-switch v-model:collapsed="collapsed" />
         <span>{{ route.meta.title }}</span>
-        <bot-dropdown :bot-id="connectionInfo?.authentication?.qq" :bot="botProfile" @menu-select="onMenuSelect" />
+        <bot-dropdown
+          :bot-id="connectionInfo?.authentication?.qq"
+          :bot="botProfile"
+          @menu-select="onMenuSelect"
+        />
       </a-layout-header>
       <a-layout-content id="content">
         <router-view />
@@ -20,13 +24,12 @@
       @connect="connect"
       @cancel="cancelModal"
     ></connection-modal>
-    <bot-profile-modal 
-      :visible="botprofileModalVisible" 
+    <bot-profile-modal
+      :visible="botprofileModalVisible"
       :bot-id="connectionInfo?.authentication?.qq"
       :bot="botProfile"
       @cancel="() => botprofileModalVisible = false"
     />
-      
   </a-layout>
 </template>
 <script setup lang="ts">
@@ -41,6 +44,7 @@ import { message, notification } from "ant-design-vue";
 import { onMounted, watch } from "@vue/runtime-core";
 import { useConnectionInfo } from "@/use";
 import BotProfileModal from "@/components/modal/BotProfileModal.vue"
+import { registerEventDispatcher } from "@/use/session";
 
 const { botProfile } = useBotProfile()
 const connectionInfo = useConnectionInfo()
@@ -63,6 +67,16 @@ watch(() => connecting, () => {
   }
 })
 
+function registerScheduler() {
+  if (!miraiApi.value) return
+  registerEventDispatcher(miraiApi.value)
+  notification.success({
+    message: "事件监听已启动"
+  })
+}
+
+watch(() => miraiApi.value != undefined, registerScheduler)
+
 function showConnectModal() {
   message.warning("请先连接服务器")
   if (miraiApi.value == undefined) {
@@ -78,26 +92,32 @@ function cancelModal() {
   }
 }
 
-onMounted(async () => {
-  if (!connectionInfo.value) {
-    showConnectModal()
-    return
-  }
+async function connectAutomatic() {
+  if (!connectionInfo.value) return
   try {
     connecting = true
     const { api } = await createMiraiWebsocketApi(connectionInfo.value)
     setDefaultMiraiApi(api)
     connectionModalVisible = false
     notification.success({
-      message: "连接websocket服务器成功"
+      message: "自动连接服务器成功"
     })
     connecting = false
   } catch {
     notification.error({
-      message: "连接websocket服务器失败"
+      message: "自动连接服务器失败"
     })
     showConnectModal()
   }
+}
+
+onMounted(async () => {
+  if (miraiApi.value) return  // 已登录无需重复连接
+  if (!connectionInfo.value) {  // 没有连接信息，弹出连接框
+    showConnectModal()
+    return
+  }
+  connectAutomatic()
 })
 
 async function onMenuSelect(itemName: string) {
@@ -122,17 +142,15 @@ async function connect(connectInfo: any) {
     setDefaultMiraiApi(api)
     connectionModalVisible = false
     notification.success({
-      message: "连接到websocket服务器成功"
+      message: "连接服务器成功"
     })
     connectionInfo.value = param  // 保存信息
   } catch (e) {
     const reason = e?.message ?? ""
-    message.error(`连接websocket服务器失败!  ${reason}`)
+    message.error(`连接服务器失败!  ${reason}`)
   }
   connecting = false
 }
-
-
 
 </script>
 

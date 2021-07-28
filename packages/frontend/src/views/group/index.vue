@@ -35,5 +35,5 @@ onMounted(() => emitUpdate())
 
 </script>
     
-    <style>
+<style>
 </style>
