@@ -22,11 +22,12 @@
         </a-card-meta>
         <a-divider></a-divider>
         <a-descriptions title="Mah 插件信息">
-          <a-descriptions-item span="24" label="地址">{{ connectionInfo?.address }}</a-descriptions-item>
-          <a-descriptions-item span="24" label="版本">{{ pluginInfo?.version }}</a-descriptions-item>
+          <a-descriptions-item :span="3" label="地址">{{ connectionInfo?.address }}</a-descriptions-item>
+          <a-descriptions-item :span="3" label="版本">{{ pluginInfo?.version }}</a-descriptions-item>
         </a-descriptions>
+        <a-divider></a-divider>
         <a-descriptions title="MI-RE-DO">
-          <a-descriptions-item span="24" label="Github"><a href="https://github.com/only52607/mi-re-do"> only52607/MI-RE-DO </a></a-descriptions-item>
+          <a-descriptions-item :span="3" label="Github"><a href="https://github.com/only52607/mi-re-do"> only52607/MI-RE-DO </a></a-descriptions-item>
         </a-descriptions>
       </a-card>
     </div>
@@ -38,7 +39,7 @@
 import { GlobalFooter } from "@/layouts/footer"
 import UserAvatar from "@/components/info/UserAvatar.vue"
 import { useConnectionInfo } from "@/use";
-import { useBotProfile, useMiraiApi, usePluginInfo } from "mirai-reactivity-ws";
+import { useBotProfile, usePluginInfo } from "mirai-reactivity-ws";
 import { watchEffect } from "@vue/runtime-core";
 
 const { botProfile } = useBotProfile()
