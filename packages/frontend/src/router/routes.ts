@@ -29,6 +29,7 @@ const menuRoute =  {
     },
     {
       path: 'message',
+      name: 'message',
       component: () => import("@/views/message/index.vue"),
       meta: {
         title: "消息",
@@ -37,6 +38,7 @@ const menuRoute =  {
     },
     {
       path: 'friend',
+      name: 'friend',
       component: () => import("@/views/friend/index.vue"),
       meta: {
         title: "好友",
@@ -45,6 +47,7 @@ const menuRoute =  {
     },
     {
       path: 'group',
+      name: 'group',
       component: () => import("@/views/group/index.vue"),
       meta: {
         title: "群聊",
@@ -53,6 +56,7 @@ const menuRoute =  {
     },
     {
       path: 'plugin',
+      name: 'plugin',
       component: () => import("@/views/plugin/index.vue"),
       meta: {
         title: "插件",
@@ -61,6 +65,7 @@ const menuRoute =  {
     },
     {
       path: 'setting',
+      name: 'setting',
       component: () => import("@/views/setting/index.vue"),
       meta: {
         title: "配置",

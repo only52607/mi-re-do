@@ -10,17 +10,13 @@
     <template v-else>
         <a-row style="height: 15%; ">
             <a-col :span="24">
-                <a-page-header
-                    :title="group.name"
-                    :sub-title="group.id"
-                    style="background:#fff;"
-                >
+                <a-page-header :title="group.name" :sub-title="group.id" style="background:#fff;">
                     <template #extra>
                         <a-button
                             type="primary"
                             key="send-message"
                             ghost
-                            @click="onClickSendMessageButton"
+                            @click="$emit('send-group-message', 'group', group)"
                         >发消息</a-button>
                     </template>
                 </a-page-header>
@@ -28,7 +24,7 @@
         </a-row>
         <a-row type="flex" justify="center" style="height: 75%; overflow:auto;">
             <a-col :span="20">
-                <member-list :member-list="memberList" :loading="loading"></member-list>
+                <member-list @send-temp-message="emitSendTempMessage" :member-list="memberList" :loading="loading"></member-list>
             </a-col>
         </a-row>
     </template>
@@ -45,8 +41,13 @@ defineProps<{
     loading: boolean
 }>()
 
-function onClickSendMessageButton() {
+const emits = defineEmits<{
+    (event: 'send-group-message', type: "group", contact: Group): void
+    (event: 'send-temp-message', type: "temp", contact: Member): void
+}>()
 
+function emitSendTempMessage(type: "temp", contact: Member) {
+    emits('send-temp-message', type, contact)
 }
 
 </script>

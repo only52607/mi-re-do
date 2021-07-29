@@ -18,7 +18,7 @@
                             type="primary"
                             key="send-message"
                             ghost
-                            @click="onClickSendMessageButton"
+                            @click="$emit('send-temp-message', 'temp', member)"
                         >发消息</a-button>
                     </template>
                     <a-card :hoverable="true">
@@ -53,9 +53,9 @@ defineProps<{
     loading: boolean
 }>()
 
-function onClickSendMessageButton() {
-
-}
+defineEmits<{
+    (event: 'send-temp-message', type: "temp", contact: Member): void
+}>()
 
 </script>
   

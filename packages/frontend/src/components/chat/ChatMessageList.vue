@@ -1,5 +1,5 @@
 <template>
-    <div id="list">
+    <div id="chat-list">
         <template v-for="event in session.events">
             <chat-message-list-item  @display-image="displayImage" :event="event"  >
             </chat-message-list-item>
@@ -9,16 +9,52 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, ref } from 'vue';
+import { defineProps, nextTick, onMounted, ref, watch, watchEffect } from 'vue';
 import type { Session } from '@/use';
 import ChatMessageListItem from "./ChatMessageListItem.vue"
 import ImageModal from "@/components/modal/ImageModal.vue"
 const imageModalVisible = ref(false)
 const imageUrl = ref("")
 
-defineProps<{
+const props = defineProps<{
     session: Session
+    scrollToButtom: boolean
 }>()
+
+const emits = defineEmits<{
+    (event: 'update:scroll-to-buttom', value: boolean): void
+}>()
+
+function executeScrollToButtom() {
+    const chatListNode = document.getElementById('chat-list')
+    if (!chatListNode) return
+    chatListNode.scrollTop = chatListNode.scrollHeight
+}
+
+function checkAndScroll() {
+    if (props.scrollToButtom) {
+        executeScrollToButtom()
+    }
+}
+
+watchEffect(() => {
+    checkAndScroll()
+})
+
+watch(() => props.session.events.length, () => {
+    nextTick(() => {
+        checkAndScroll()
+    })
+})
+
+onMounted(() => {
+    checkAndScroll()
+    const chatListNode = document.getElementById('chat-list')
+    if (!chatListNode) return
+    chatListNode.onscroll = () => {
+        emits("update:scroll-to-buttom", Math.abs(chatListNode.scrollHeight - chatListNode.scrollTop - chatListNode.clientHeight) < 1)
+    }
+})
 
 function displayImage(url: string) {
     imageUrl.value = url
@@ -29,8 +65,8 @@ function displayImage(url: string) {
 
 
 <style lang="less" scoped>
-#list {
-    overflow: scroll;
+#chat-list {
+    overflow: auto;
     height: 100%;
 }
 </style>

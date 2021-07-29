@@ -9,32 +9,41 @@
     <a-menu mode="inline">
         <a-empty v-if="sessionList.length == 0" />
         <template v-else>
-            <a-menu-item v-for="(eventBox, i) in sessionList" :key="eventBox.identity" >
+            <a-menu-item id="session-item" v-for="(eventBox, i) in sessionList" :key="eventBox.identity">
                 <template #icon>
-                    <template v-if="eventBox.type=='friend'">
-                        <user-avatar :user-id="eventBox.contact?.id ?? 0" :nickname="eventBox.contact?.nickname ?? ''" />
-                    </template> 
-                    <template v-if="eventBox.type=='group'">
-                        <group-avatar :group-id="eventBox.contact?.id ?? 0" :group-name="eventBox.contact?.name ?? ''" />
+                    <template v-if="eventBox.type == 'friend'">
+                        <user-avatar
+                            :user-id="eventBox.contact?.id ?? 0"
+                            :nickname="eventBox.contact?.nickname ?? ''"
+                        />
                     </template>
-                    <template v-if="eventBox.type=='temp'">
-                        <user-avatar :user-id="eventBox.contact?.id ?? 0" :nickname="eventBox.contact?.memberName ?? ''" />
+                    <template v-if="eventBox.type == 'group'">
+                        <group-avatar
+                            :group-id="eventBox.contact?.id ?? 0"
+                            :group-name="eventBox.contact?.name ?? ''"
+                        />
+                    </template>
+                    <template v-if="eventBox.type == 'temp'">
+                        <user-avatar
+                            :user-id="eventBox.contact?.id ?? 0"
+                            :nickname="eventBox.contact?.memberName ?? ''"
+                        />
                     </template>
                 </template>
                 <a-row>
-                  <a-col :span="20">
-                    <template v-if="eventBox.type=='friend'">
-                    {{ eventBox.contact?.nickname }}
-                </template> 
-                <template v-if="eventBox.type=='group'">
-                    {{ eventBox.contact?.name }}
-                </template>
-                <template v-if="eventBox.type=='temp'">
-                    {{ eventBox.contact?.memberName }}
-                </template>
+                    <a-col :span="20">
+                        <span id="session-name">
+                            <template
+                                v-if="eventBox.type == 'friend'"
+                            >{{ eventBox.contact?.nickname }}</template>
+                            <template v-if="eventBox.type == 'group'">{{ eventBox.contact?.name }}</template>
+                            <template
+                                v-if="eventBox.type == 'temp'"
+                            >{{ eventBox.contact?.memberName }}</template>
+                        </span>
                     </a-col>
                     <a-col :span="4">
-                        <a-badge :overflow-count="999" :count="eventBox.unreadCount" ></a-badge>
+                        <a-badge :overflow-count="999" :count="eventBox.unreadCount"></a-badge>
                     </a-col>
                 </a-row>
             </a-menu-item>
@@ -52,7 +61,25 @@ defineProps<{
     sessionList: SessionList
 }>()
 
+document.oncontextmenu = (event) => {
+    event.preventDefault();
+
+    // el.style.display='block';
+    // el.style.left=event.clientX+'px';
+    // el.style.top=event.clientY+'px';
+
+}
+
 </script>
   
-<style lang="less">
+<style lang="less" scoped>
+#session-name {
+    overflow:hidden;
+    text-overflow:ellipsis;
+    -webkit-text-overflow:ellipsis;
+    -o-text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
+
 </style>
