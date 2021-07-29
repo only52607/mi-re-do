@@ -178,7 +178,8 @@ async function connect(connectInfo: any) {
 #logo {
   color: @primary-color;
   font-size: 17px;
-  margin: 18px 0px 10px 25px;
+  margin: 18px 0px 10px 0;
   font-weight: bold;
+  text-align: center;
 }
 </style>
