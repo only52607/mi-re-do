@@ -17,8 +17,9 @@
 import zhCN from 'ant-design-vue/es/locale/zh_CN';
 import moment from 'moment';
 import 'moment/dist/locale/zh-cn';
+import { ref } from 'vue';
 moment.locale('zh-cn');
-ref: locale = zhCN
+const locale = ref(zhCN)
 </script>
 
 <style>

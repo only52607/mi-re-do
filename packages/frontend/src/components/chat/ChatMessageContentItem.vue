@@ -63,7 +63,7 @@ defineEmits<{
 
 function getImageUrl(message: SingleMessage) {
     if (message.type == "Image" || message.type == "FlashImage") {
-        return message.url
+        return message.url ?? ""
     }
     return ""
 }

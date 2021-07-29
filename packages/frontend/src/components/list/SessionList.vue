@@ -9,7 +9,7 @@
     <a-menu mode="inline">
         <a-empty v-if="sessionList.length == 0" />
         <template v-else>
-            <a-menu-item id="session-item" v-for="(eventBox, i) in sessionList" :key="eventBox.identity">
+            <a-menu-item id="session-item" v-for="(eventBox, i) in sessionList" :key="sessionIdentityAsString(eventBox.identity)">
                 <template #icon>
                     <template v-if="eventBox.type == 'friend'">
                         <user-avatar
@@ -56,19 +56,14 @@ import { defineProps } from 'vue';
 import UserAvatar from "@/components/info/UserAvatar.vue"
 import GroupAvatar from "@/components/info/GroupAvatar.vue"
 import type { SessionList } from '@/use/session';
+import { sessionIdentityAsString } from '@/use/session';
 
 defineProps<{
     sessionList: SessionList
 }>()
 
-document.oncontextmenu = (event) => {
-    event.preventDefault();
-
-    // el.style.display='block';
-    // el.style.left=event.clientX+'px';
-    // el.style.top=event.clientY+'px';
-
-}
+// document.oncontextmenu = (event) => {
+// }
 
 </script>
   
@@ -80,6 +75,5 @@ document.oncontextmenu = (event) => {
     -o-text-overflow:ellipsis;
     white-space:nowrap;
 }
-
 
 </style>

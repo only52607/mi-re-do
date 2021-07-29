@@ -21,7 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch, watchEffect } from "vue";
+import { computed, ref, watch } from "vue";
 import SessionList from "@/components/list/SessionList.vue"
 import { sessionIdentityEquals, useSessionList } from "@/use/session";
 import type { SessionIdentity } from "@/use/session";
@@ -30,28 +30,29 @@ import { useMiraiApi, messageBuilder, useBotProfile } from "mirai-reactivity-ws"
 import type { MessageChain, MessageReceipt, BotProfile } from "mirai-reactivity-ws";
 import { message } from "ant-design-vue";
 import { useConnectionInfo } from "@/use";
+import { sessionIdentityAsString } from '@/use/session';
 
-const selectedKeys = ref([] as SessionIdentity[]);
+const selectedKeys = ref([] as string[]);
 const sessionList = useSessionList()
-ref: sessionListCollapsed = false
-ref: pendingText = ""
-ref: miraiApi = useMiraiApi()
+const sessionListCollapsed = ref(false)
+const pendingText = ref("")
+const miraiApi = useMiraiApi()
 const { botProfile } = useBotProfile()
-ref: connectionInfo = useConnectionInfo()
-ref: scrollChatListToButtom = true
+const connectionInfo = useConnectionInfo()
+const scrollChatListToButtom = ref(true)
 
 const selectedSession = computed(() => {
     if (selectedKeys.value.length == 0) return;
-    const selctedKey = selectedKeys.value[0]
-    const session = sessionList.find((session) => sessionIdentityEquals(session.identity, selctedKey))
+    const selectedKey = selectedKeys.value[0]
+    const session = sessionList.find((session) => sessionIdentityAsString(session.identity) == selectedKey)
     if(session) {
         session.unreadCount = 0
     }
     return session
 })
 
-watch(() => selectedKeys.value,() => {
-    scrollChatListToButtom = true
+watch(() => selectedKeys.value, () => {
+    scrollChatListToButtom.value = true
 })
 
 function buildMessage(type: "xml" | "json" | "text" | "message-chain", text: string): MessageChain | undefined {
@@ -68,19 +69,19 @@ function buildMessage(type: "xml" | "json" | "text" | "message-chain", text: str
 }
 
 async function executeSend(messageChain: MessageChain): Promise<MessageReceipt | undefined> {
-    if (selectedSession.value == undefined || miraiApi == undefined) return
+    if (selectedSession.value == undefined || miraiApi.value == undefined) return
     switch (selectedSession.value.type) {
         case "friend":
-            return await miraiApi.sendFriendMessage(messageChain, selectedSession.value.contact.id)
+            return await miraiApi.value.sendFriendMessage(messageChain, selectedSession.value.contact.id)
         case "group":
-            return await miraiApi.sendGroupMessage(messageChain, selectedSession.value.contact.id)
+            return await miraiApi.value.sendGroupMessage(messageChain, selectedSession.value.contact.id)
         case "temp":
-            return await miraiApi.sendTempMessage(messageChain, selectedSession.value.contact.id, selectedSession.value.contact.group.id)
+            return await miraiApi.value.sendTempMessage(messageChain, selectedSession.value.contact.id, selectedSession.value.contact.group.id)
     }
 }
 
 async function handleSend(type: "xml" | "json" | "text" | "message-chain", text: string) {
-    if (miraiApi == undefined) {
+    if (miraiApi.value == undefined) {
         message.error("连接未就绪")
         return
     }
@@ -88,17 +89,17 @@ async function handleSend(type: "xml" | "json" | "text" | "message-chain", text:
     if (messageChain == undefined || selectedSession.value == undefined) return
     try {
         const receipt = await executeSend(messageChain)
-        pendingText = ""
-        miraiApi.emitEvent({
+        pendingText.value = ""
+        miraiApi.value.emitEvent({
             type: "SentMessage",
             receipt: receipt,
             bot: botProfile.value as BotProfile,
-            botId: connectionInfo?.authentication.qq ?? 0,
+            botId: connectionInfo.value?.authentication.qq ?? 0,
             messageChain: messageChain,
             targetType: selectedSession.value.type as any,
             target: selectedSession.value.contact as any
         })
-        scrollChatListToButtom = true
+        scrollChatListToButtom.value = true
     } catch {
         message.error("消息发送失败")
     }

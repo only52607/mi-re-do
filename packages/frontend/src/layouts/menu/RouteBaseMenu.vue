@@ -24,8 +24,8 @@
 </template>
 
 
-<script setup="" lang="ts">
-import { watch, defineProps } from "vue"
+<script setup lang="ts">
+import { watch, defineProps, ref } from "vue"
 import RouteBaseSubMenu from "./RouteBaseSubMenu.vue"
 import RouteBaseMenuItem from "./RouteBaseMenuItem.vue"
 import { routes, flatternRoutes } from "@/router"
@@ -36,9 +36,9 @@ const props = defineProps<{
   currentRoute: any
 }>()
 const route = props.currentRoute!
-ref: selectedKeys = [route.path] as string[];
+const selectedKeys = ref<string[]>([route.path]);
 watch(() => route.path,() => {
-  selectedKeys = [route.path]
+  selectedKeys.value = [route.path]
 })
 
 </script>

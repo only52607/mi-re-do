@@ -45,24 +45,25 @@ import { onMounted, watch } from "@vue/runtime-core";
 import { useConnectionInfo } from "@/use";
 import BotProfileModal from "@/components/modal/BotProfileModal.vue"
 import { registerEventDispatcher } from "@/use/session";
+import { ref } from "vue";
 
 const { botProfile } = useBotProfile()
 const connectionInfo = useConnectionInfo()
 let hideLoadingToast: () => void | undefined
-ref: connectionModalVisible = false
-ref: botprofileModalVisible = false
+const connectionModalVisible = ref(false)
+const botprofileModalVisible = ref(false)
 const router = useRouter()
 const route = useRoute()
-ref: collapsed = true
-ref: connecting = false
+const collapsed = ref(true)
+const connecting = ref(false)
 const miraiApi = useMiraiApi()
 
-watch(() => connecting, () => {
-  if (!connecting && hideLoadingToast) {
+watch(() => connecting.value, () => {
+  if (!connecting.value && hideLoadingToast) {
     hideLoadingToast()
     return
   }
-  if (connecting) {
+  if (connecting.value) {
     hideLoadingToast = message.loading("正在连接服务器")
   }
 })
@@ -80,13 +81,13 @@ watch(() => miraiApi.value != undefined, registerScheduler)
 function showConnectModal() {
   message.warning("请先连接服务器")
   if (miraiApi.value == undefined) {
-    connectionModalVisible = true
+    connectionModalVisible.value = true
   }
 }
 
 function cancelModal() {
   if (miraiApi.value) {
-    connectionModalVisible = false
+    connectionModalVisible.value = false
   } else {
     message.warning("请先连接到服务器")
   }
@@ -95,14 +96,14 @@ function cancelModal() {
 async function connectAutomatic() {
   if (!connectionInfo.value) return
   try {
-    connecting = true
+    connecting.value = true
     const { api } = await createMiraiWebsocketApi(connectionInfo.value)
     setDefaultMiraiApi(api)
-    connectionModalVisible = false
+    connectionModalVisible.value = false
     notification.success({
       message: "自动连接服务器成功"
     })
-    connecting = false
+    connecting.value = false
   } catch {
     notification.error({
       message: "自动连接服务器失败"
@@ -123,24 +124,24 @@ onMounted(async () => {
 async function onMenuSelect(itemName: string) {
   switch (itemName) {
     case "connect":
-      connectionModalVisible = true
+      connectionModalVisible.value = true
       break
     case "show-profile":
-      botprofileModalVisible = true
+      botprofileModalVisible.value = true
       break
   }
 }
 
 async function connect(connectInfo: any) {
   try {
-    connecting = true
+    connecting.value = true
     const param = {
       address: connectInfo.address,
       authentication: { qq: parseInt(connectInfo.qq), verifyKey: connectInfo.verifyKey }
     }
     const { api } = await createMiraiWebsocketApi(param)
     setDefaultMiraiApi(api)
-    connectionModalVisible = false
+    connectionModalVisible.value = false
     notification.success({
       message: "连接服务器成功"
     })
@@ -149,7 +150,7 @@ async function connect(connectInfo: any) {
     const reason = e?.message ?? ""
     message.error(`连接服务器失败!  ${reason}`)
   }
-  connecting = false
+  connecting.value = false
 }
 
 </script>

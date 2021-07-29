@@ -3,7 +3,7 @@
         <span id="user-dropdown-title">
             {{ bot?.nickname ?? "未连接" }}
             <a-divider type="vertical" />
-            <user-avatar size="small" :user-id="botId ?? 0" :nickname="bot?.nickname"/>
+            <user-avatar size="small" :user-id="botId ?? 0" :nickname="bot?.nickname" />
         </span>
         <template #overlay>
             <a-menu>

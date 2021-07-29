@@ -20,23 +20,23 @@
 
 <script setup lang="ts">
 import { CheckOutlined, EditOutlined } from '@ant-design/icons-vue';
-import { defineEmits, defineProps, useAttrs } from 'vue';
+import { defineEmits, defineProps, ref, useAttrs } from 'vue';
 const props = defineProps<{
   value: any
 }>()
 const emit = defineEmits(["change","update:value"])
-ref: inputValue = ""
-ref: editing = false
-ref: oldValue = "" as string | undefined
+const inputValue = ref("")
+const editing = ref(false)
+const oldValue = ref<string | undefined>("")
 function finish() {
-  editing = false;
-  emit("update:value", inputValue)
-  emit('change', inputValue, oldValue)
+  editing.value = false;
+  emit("update:value", inputValue.value)
+  emit('change', inputValue.value, oldValue.value)
 }
 function startEdit() {
-  if (props.value) inputValue = props.value?.toString()
-  oldValue = inputValue
-  editing = true;
+  if (props.value) inputValue.value = props.value?.toString()
+  oldValue.value = inputValue.value
+  editing.value = true;
 }
 
 </script>

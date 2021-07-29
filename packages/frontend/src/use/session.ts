@@ -88,6 +88,15 @@ export function pushEmptySession<T extends SessionType>(type: T, contact: Contac
     })
 }
 
+export function sessionIdentityAsString(identity: SessionIdentity) {
+    return `${identity[0]} ${identity[1]}`
+}
+
+export function stringAsSessionIdentity(identityString: String): SessionIdentity {
+    const parts = identityString.split(' ')
+    return [parseInt(parts[0]), parts[1] as SessionType]
+}
+
 function getSessionMeta(event: Event): SessionMeta | undefined {
     switch (event.type) {
         case "FriendMessage":
