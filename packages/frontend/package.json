@@ -5,25 +5,26 @@
   "scripts": {
     "vite:dev": "vite --port 80",
     "vite:build": "vue-tsc --noEmit && vite build",
-    "vite:serve": "vite preview --port 80"
+    "vite:serve": "vite preview --port 80",
+    "esbuild:install": "node ./node_modules/esbuild/install.js"
   },
   "dependencies": {
     "ant-design-vue": "^2.2.2",
     "core-js": "^3.13.0",
     "mirai-reactivity-ws": "file:../mirai-reactivity-ws",
     "path-browserify": "^0.0.1",
-    "vue": "^3.0.10",
     "vue-router": "^4.0.8",
     "whatwg-fetch": "^3.6.2"
   },
   "devDependencies": {
     "@types/ws": "^7.4.7",
-    "@vitejs/plugin-vue": "^1.2.2",
-    "@vue/compiler-sfc": "^3.0.0",
+    "@vitejs/plugin-vue": "^1.3.0",
+    "@vue/compiler-sfc": "^3.2.0-beta.6",
     "less": "^3.9.0",
     "less-loader": "^5.0.0",
     "typescript": "~3.9.3",
     "vite": "^2.3.4",
+    "vue": "^3.2.0-beta.6",
     "vue-tsc": "^0.0.24"
   },
   "browserslist": [
