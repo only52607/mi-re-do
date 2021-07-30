@@ -124,6 +124,7 @@ function getSessionMeta(event: Event): SessionMeta | undefined {
                 contact: event.target as any
             }
     }
+    return undefined
 }
 
 function eventDispatcher(event: Event) {

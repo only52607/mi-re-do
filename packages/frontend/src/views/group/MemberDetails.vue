@@ -16,7 +16,7 @@
                             type="primary"
                             key="send-message"
                             ghost
-                            @click="$emit('send-group-message', 'group', group)"
+                            @click="$emit('goto-group-session')"
                         >发消息</a-button>
                     </template>
                 </a-page-header>
@@ -24,7 +24,7 @@
         </a-row>
         <a-row type="flex" justify="center" style="height: 75%; overflow:auto;">
             <a-col :span="20">
-                <member-list @send-temp-message="emitSendTempMessage" :member-list="memberList" :loading="loading"></member-list>
+                <member-list @goto-temp-session="(member) => emits('goto-temp-session', member)" :member-list="memberList" :loading="loading"></member-list>
             </a-col>
         </a-row>
     </template>
@@ -35,6 +35,7 @@ import { defineProps } from 'vue';
 import type { Group, Member } from "mirai-reactivity-ws"
 import type { Optional } from '@/types/utility';
 import MemberList from "@/components/list/MemberList.vue"
+
 defineProps<{
     memberList: Optional<Member[]>,
     group: Optional<Group>,
@@ -42,13 +43,9 @@ defineProps<{
 }>()
 
 const emits = defineEmits<{
-    (event: 'send-group-message', type: "group", contact: Group): void
-    (event: 'send-temp-message', type: "temp", contact: Member): void
+    (event: 'goto-group-session'): void
+    (event: 'goto-temp-session', contact: Member): void
 }>()
-
-function emitSendTempMessage(type: "temp", contact: Member) {
-    emits('send-temp-message', type, contact)
-}
 
 </script>
   

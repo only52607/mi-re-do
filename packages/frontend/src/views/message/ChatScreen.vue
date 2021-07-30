@@ -10,58 +10,21 @@
     <template v-else>
         <div id="main">
             <div id="header">
-                <a-page-header
-                    v-if="session.type == 'friend'"
-                    :title="session.contact.nickname"
-                    :sub-title="session.contact.id"
-                    style="background:#fff;"
-                    @back="() => { }"
-                >
+                <session-header :session="session">
                     <template #backIcon>
-                        <menu-switch
-                            :collapsed="sessionListCollapsed"
-                            @update:collapsed="(value) => $emit('update:sessionListCollapsed', value)"
-                        />
+                        <slot name="backIcon"></slot>
                     </template>
-                </a-page-header>
-                <a-page-header
-                    v-else-if="session.type == 'group'"
-                    :title="session.contact.name"
-                    :sub-title="session.contact.id"
-                    style="background:#fff;"
-                    @back="() => { }"
-                >
-                    <template #backIcon>
-                        <menu-switch
-                            :collapsed="sessionListCollapsed"
-                            @update:collapsed="(value) => $emit('update:sessionListCollapsed', value)"
-                        />
-                    </template>
-                </a-page-header>
-                <a-page-header
-                    v-else-if="session.type == 'temp'"
-                    :title="session.contact.memberName"
-                    :sub-title="session.contact.id"
-                    style="background:#fff;"
-                    @back="() => { }"
-                >
-                    <template #backIcon>
-                        <menu-switch
-                            :collapsed="sessionListCollapsed"
-                            @update:collapsed="(value) => $emit('update:sessionListCollapsed', value)"
-                        />
-                    </template>
-                </a-page-header>
+                </session-header>
             </div>
             <div id="chat-message-row">
-                <chat-message-list :scroll-to-buttom="scrollToButtom" @update:scrollToButtom="(value) =>$emit('update:scroll-to-buttom', value)" :session="session" />
+                <chat-message-list :scroll-to-buttom="scrollToButtom" @update:scrollToButtom="emitUpdateScrollToButtom" :session="session" />
             </div>
             <div id="input-area">
                 <a-textarea
                     :value="pendingText"
                     placeholder="发送消息"
                     :auto-size="{ minRows: 2, maxRows: 4 }"
-                    @update:value = "(value) => $emit('update:pending-text', value)"
+                    @update:value = "emitUpdatePendingText"
                 />
             </div>
             <div id="send-row" justify="end" style="padding: 5px;">
@@ -90,19 +53,22 @@ import type { Optional } from '@/types/utility';
 import type { Session } from '@/use';
 import ChatMessageList from "@/components/chat/ChatMessageList.vue"
 import { DownOutlined } from '@ant-design/icons-vue';
+import SessionHeader from "./SessionHeader.vue"
 
 defineProps<{
     session: Optional<Session>,
-    sessionListCollapsed: boolean,
     pendingText: string,
     scrollToButtom: boolean
 }>()
 
-defineEmits<{
+const emits = defineEmits<{
   (event: 'send', type: "text" | "xml" | "json" | "message-chain" , text: string): void
   (event: 'update:pending-text', text: string): void
-  (event: 'update:scroll-to-buttom', value: boolean): void
+  (event: 'update:scroll-to-buttom', value: boolean): VideoFacingModeEnum
 }>()
+
+const emitUpdatePendingText = (text: string) => emits('update:pending-text', text)
+const emitUpdateScrollToButtom = (value: boolean) => emits('update:scroll-to-buttom', value)
 
 </script>
 

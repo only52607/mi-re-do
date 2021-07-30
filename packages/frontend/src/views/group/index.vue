@@ -10,9 +10,9 @@
         </a-col>
         <a-col :span="16" style="height:100%;">
             <member-details 
-                @send-temp-message="sendTempMessage"
-                @send-group-message="sendGroupMessage"
-                :group="group" 
+                @goto-group-session="gotoGroupSession"
+                @goto-temp-session="gotoTempSession"
+                :group="selectedGroup" 
                 :member-list="members" 
                 :loading="memberlistState!='done'" 
             />
@@ -25,7 +25,7 @@ import { computed, onMounted, ref } from "vue";
 import GroupList from "@/components/list/GroupList.vue"
 import { useMemberList, useGroups } from "mirai-reactivity-ws";
 import MemberDetails from "@/views/group/MemberDetails.vue"
-import { pushEmptySession, sessionIdentityEquals, useSessionList } from "@/use/session";
+import { pushEmptySession, sessionIdentityEquals, useSessionList, sessionIdentityAsString } from "@/use/session";
 import { useRouter } from "vue-router";
 import type { Member, Group } from "mirai-reactivity-ws"
 
@@ -36,23 +36,23 @@ const selectedGroupId = computed(() => {
     if (!groups || selectedKeys.value.length == 0) return;
     return selectedKeys.value[0]
 });
-const group = computed(() => { 
+const selectedGroup = computed(() => { 
     if (!selectedGroupId || !groups.value) return;
     return groups.value.find((group) =>  group.id == selectedGroupId.value )
 })
 const { members, state: memberlistState, emitUpdate } = useMemberList(selectedGroupId);
 onMounted(() => emitUpdate())
 
-function sendGroupMessage(type: "group", contact: Group) {
-    pushEmptySession(type, contact)
-    router.push({name: "message"})
+function gotoGroupSession() {
+  if (!selectedGroup.value) return
+  pushEmptySession("group", selectedGroup.value)
+  router.push({ name: "message", query: { sessionIdentityString: sessionIdentityAsString([selectedGroup.value.id, "group"]) } })
 }
 
-function sendTempMessage(type: "temp", contact: Member) {
-    pushEmptySession(type, contact)
-    router.push({name: "message"})
+function gotoTempSession(contact: Member) {
+  pushEmptySession("temp", contact)
+  router.push({ name: "message", query: { sessionIdentityString: sessionIdentityAsString([contact.id, "temp"]) } })
 }
-
 
 </script>
     

@@ -1,12 +1,5 @@
-<!--
- * @Author: ooooonly
- * @LastEditors: ooooonly
- * @Description: 
- * @Date: 2021-02-03 17:46:06
- * @LastEditTime: 2021-02-27 20:58:59
--->
 <template>
-    <a-empty v-if="!profile" />
+    <a-empty v-if="!profile || !friend" />
     <a-spin v-else-if="loading" />
     <template v-else>
         <a-card :loading="loading">
@@ -23,15 +16,13 @@
                     <user-description :user-id="friend?.id ?? 0" :profile="profile" />
                 </a-col>
             </a-row>
-
             <a-divider></a-divider>
-
             <a-row type="flex" justify="center">
                 <a-col :span="6">
                     <a-button
                         type="primary"
                         key="send-message"
-                        @click="$emit('send-friend-message', 'friend', friend)"
+                        @click="$emit('goto-friend-session')"
                     >发消息</a-button>
                 </a-col>
             </a-row>
@@ -52,8 +43,8 @@ const props = defineProps<{
     loading: boolean
 }>()
 
-defineEmits<{
-    (event: 'send-friend-message', type: "friend", contact: Friend): void
+const emits = defineEmits<{
+    (event: 'goto-friend-session'): void
 }>()
 
 </script>

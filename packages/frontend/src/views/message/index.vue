@@ -6,22 +6,27 @@
                 :session-list="sessionList"
                 v-model:selectedKeys="selectedKeys"
                 :inline-collapsed="sessionListCollapsed"
+                @select="scrollChatListToButtom = true"
             />
         </div>
         <div id="right">
             <chat-screen
                 @send="handleSend"
+                :session="selectedSession"
                 v-model:pending-text="pendingText"
                 v-model:session-list-collapsed="sessionListCollapsed"
-                :session="selectedSession"
-                v-model:scrollToButtom = "scrollChatListToButtom"
-            />
+                v-model:scroll-to-buttom="scrollChatListToButtom"
+            >
+            <template #backIcon>
+                <menu-switch v-model:collapsed="sessionListCollapsed" />
+            </template>
+        </chat-screen>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import SessionList from "@/components/list/SessionList.vue"
 import { sessionIdentityEquals, useSessionList } from "@/use/session";
 import type { SessionIdentity } from "@/use/session";
@@ -31,28 +36,32 @@ import type { MessageChain, MessageReceipt, BotProfile } from "mirai-reactivity-
 import { message } from "ant-design-vue";
 import { useConnectionInfo } from "@/use";
 import { sessionIdentityAsString } from '@/use/session';
+import { useRoute } from "vue-router";
 
-const selectedKeys = ref([] as string[]);
 const sessionList = useSessionList()
+const { botProfile } = useBotProfile()
+const connectionInfo = useConnectionInfo()
+const route = useRoute()
+const selectedKeys = ref([] as string[])
 const sessionListCollapsed = ref(false)
 const pendingText = ref("")
 const miraiApi = useMiraiApi()
-const { botProfile } = useBotProfile()
-const connectionInfo = useConnectionInfo()
 const scrollChatListToButtom = ref(true)
+
+onMounted(() => {
+    if (route.query["sessionIdentityString"]) {
+        selectedKeys.value = [route.query["sessionIdentityString"] as string]
+    }
+})
 
 const selectedSession = computed(() => {
     if (selectedKeys.value.length == 0) return;
     const selectedKey = selectedKeys.value[0]
     const session = sessionList.find((session) => sessionIdentityAsString(session.identity) == selectedKey)
-    if(session) {
+    if (session) {
         session.unreadCount = 0
     }
     return session
-})
-
-watch(() => selectedKeys.value, () => {
-    scrollChatListToButtom.value = true
 })
 
 function buildMessage(type: "xml" | "json" | "text" | "message-chain", text: string): MessageChain | undefined {
@@ -106,7 +115,8 @@ async function handleSend(type: "xml" | "json" | "text" | "message-chain", text:
 }
 
 </script>
-    
+
+
 <style lang="less" scoped>
 #main {
     display: flex;
