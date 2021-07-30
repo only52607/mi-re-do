@@ -11,12 +11,12 @@
       <a-card style="width: 100%">
         <a-card-meta
           :title="botProfile?.nickname"
-          :description="connectionInfo?.authentication.qq ?? 0"
+          :description="connectionInfo?.authentication?.qq ?? 0"
         >
           <template #avatar>
             <user-avatar
               :nickname="botProfile?.nickname"
-              :user-id="connectionInfo?.authentication.qq ?? 0"
+              :user-id="connectionInfo?.authentication?.qq ?? 0"
             />
           </template>
         </a-card-meta>
@@ -45,7 +45,6 @@ import { watchEffect } from "@vue/runtime-core";
 const { botProfile } = useBotProfile()
 const connectionInfo = useConnectionInfo()
 const { pluginInfo } = usePluginInfo()
-
 
 </script>
 
