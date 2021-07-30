@@ -14,7 +14,8 @@
     "sourceMap": true,
     "baseUrl": ".",
     "types": [
-      "node"
+      "node",
+      "vite-plugin-pwa/client"
     ],
     "paths": {
       "@/*": [

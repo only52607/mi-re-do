@@ -13,6 +13,7 @@
     "core-js": "^3.13.0",
     "mirai-reactivity-ws": "file:../mirai-reactivity-ws",
     "path-browserify": "^0.0.1",
+    "vue-demi": "^0.11.2",
     "vue-router": "^4.0.8",
     "whatwg-fetch": "^3.6.2"
   },
@@ -20,10 +21,12 @@
     "@types/ws": "^7.4.7",
     "@vitejs/plugin-vue": "^1.3.0",
     "@vue/compiler-sfc": "^3.2.0-beta.6",
+    "@vueuse/core": "^6.0.0-beta.1",
     "less": "^3.9.0",
     "less-loader": "^5.0.0",
     "typescript": "~3.9.3",
     "vite": "^2.3.4",
+    "vite-plugin-pwa": "^0.8.2",
     "vue": "^3.2.0-beta.6",
     "vue-tsc": "^0.0.24"
   },
