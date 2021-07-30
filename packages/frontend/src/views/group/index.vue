@@ -30,7 +30,6 @@ import { useRouter } from "vue-router";
 import type { Member, Group } from "mirai-reactivity-ws"
 
 const router = useRouter()
-
 const selectedKeys = ref([]);
 const { groups, state: groupsState } = useGroups();
 const selectedGroupId = computed(() => {
