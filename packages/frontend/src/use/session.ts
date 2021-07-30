@@ -1,15 +1,28 @@
 import { useStorage } from "@vueuse/core";
-import { Event, Friend, Group, Member, MiraiApi } from "mirai-reactivity-ws";
-import { Ref } from "vue";
+import { Event, Friend, Group, Member, MiraiApi, useMiraiApi } from "mirai-reactivity-ws";
+import { Ref, watch } from "vue";
 
+/**
+ * Session: 用于表示一个独立的会话，消息列表中的一个条目即为一个Session。
+ */
+
+/**
+ * Session的类型，分别是群消息，好友消息和临时消息
+ */
 export type SessionType = "group" | "friend" | "temp";
 
+/**
+ * Session中的目标Contact对象，如群消息对应的Contact为此群对象
+ */
 export type ContactForSessionType<T extends SessionType> = T extends "group"
   ? Group
   : T extends "friend"
   ? Friend
   : Member;
 
+/**
+ * Session的标识，用于标识一组会话。由ID和SessionType组成，ID可以是群号、好友ID等
+ */
 export type SessionIdentity<T extends SessionType = SessionType> = [number, T];
 
 export function sessionIdentityEquals<T extends SessionType = SessionType>(
@@ -164,10 +177,15 @@ function eventDispatcher(event: Event) {
  */
 let registered = false;
 
-export function registerEventDispatcher(miraiApi: MiraiApi) {
-  if (!registered) {
-    // 防止重复注册
-    miraiApi.addMiraiEventListener(eventDispatcher);
+const miraiApi = useMiraiApi()
+
+export function registerEventDispatcherForSession(onSuccess: () => void) {
+  function registerScheduler() {
+    if (!miraiApi.value || registered) return
+    miraiApi.value.addMiraiEventListener(eventDispatcher);
     registered = true;
+    onSuccess()
   }
+  watch(() => miraiApi.value != undefined, registerScheduler)
+  registerScheduler()
 }

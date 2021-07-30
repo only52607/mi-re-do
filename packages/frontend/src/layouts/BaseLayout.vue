@@ -38,14 +38,14 @@ import { RouteBaseMenu } from "./menu"
 import { GlobalLogo } from "./logo"
 import { useRoute, useRouter } from "vue-router";
 import { routes } from "@/router"
-import { createMiraiWebsocketApi, setDefaultMiraiApi, useBotProfile, useMiraiApi } from "mirai-reactivity-ws";
+import { createMiraiWebsocketApi, registerGlobalMiraiApi, useBotProfile, useMiraiApi } from "mirai-reactivity-ws";
 import BotDropdown from "@/components/BotDropdown.vue"
 import ConnectionModal from "@/components/modal/ConnectionModal.vue"
 import { message, notification } from "ant-design-vue";
 import { onMounted, watch } from "@vue/runtime-core";
 import { useConnectionInfo } from "@/use";
 import BotProfileModal from "@/components/modal/BotProfileModal.vue"
-import { registerEventDispatcher } from "@/use/session";
+import { registerEventDispatcherForSession } from "@/use/session";
 import { ref } from "vue";
 import type { MiraiWsConnectParams } from "mirai-reactivity-ws";
 
@@ -60,6 +60,12 @@ const collapsed = ref(true)
 const connecting = ref(false)
 const miraiApi = useMiraiApi()
 
+registerEventDispatcherForSession(() => {
+  notification.success({
+    message: "事件监听已启动"
+  })
+})
+
 watch(() => connecting.value, () => {
   if (!connecting.value && hideLoadingToast) {
     hideLoadingToast()
@@ -69,16 +75,6 @@ watch(() => connecting.value, () => {
     hideLoadingToast = message.loading("正在连接服务器")
   }
 })
-
-function registerScheduler() {
-  if (!miraiApi.value) return
-  registerEventDispatcher(miraiApi.value)
-  notification.success({
-    message: "事件监听已启动"
-  })
-}
-
-watch(() => miraiApi.value != undefined, registerScheduler)
 
 function showConnectModal() {
   message.warning("请先连接服务器")
@@ -98,6 +94,7 @@ function cancelModal() {
 function connectionInfoAvailable() {
   return connectionInfo.value &&
     connectionInfo.value.address &&
+    connectionInfo.value.authentication &&
     connectionInfo.value.authentication.qq &&
     connectionInfo.value.authentication.verifyKey
 }
@@ -107,12 +104,13 @@ async function connectAutomatic() {
   try {
     connecting.value = true
     const { api } = await createMiraiWebsocketApi(connectionInfo.value)
-    setDefaultMiraiApi(api)
+    registerGlobalMiraiApi(api)
     connectionModalVisible.value = false
     notification.success({ message: "自动连接服务器成功" })
-  } catch {
+  } catch(e) {
     notification.error({ message: "自动连接服务器失败" })
     showConnectModal()
+    console.log(e)
   }
   connecting.value = false
 }
@@ -141,7 +139,7 @@ async function connect(params: MiraiWsConnectParams) {
   try {
     connecting.value = true
     const { api } = await createMiraiWebsocketApi(params)
-    setDefaultMiraiApi(api)
+    registerGlobalMiraiApi(api)
     connectionModalVisible.value = false
     notification.success({
       message: "连接服务器成功"

@@ -25,7 +25,7 @@ import { computed, onMounted, ref } from "vue";
 import GroupList from "@/components/list/GroupList.vue"
 import { useMemberList, useGroups } from "mirai-reactivity-ws";
 import MemberDetails from "@/views/group/MemberDetails.vue"
-import { pushEmptySession, sessionIdentityEquals, useSessionList, sessionIdentityAsString } from "@/use/session";
+import { pushEmptySession, sessionIdentityEquals, sessionIdentityAsString } from "@/use/session";
 import { useRouter } from "vue-router";
 import type { Member, Group } from "mirai-reactivity-ws"
 

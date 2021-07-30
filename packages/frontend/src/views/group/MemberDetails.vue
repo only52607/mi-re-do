@@ -25,7 +25,7 @@
         <a-row type="flex" justify="center" style="height: 75%; overflow:auto;">
             <a-col :span="20">
                 <member-list
-                    @goto-temp-session="(member) => emits('goto-temp-session', member)"
+                    @goto-temp-session="emitGotoTempSession"
                     :member-list="memberList"
                     :loading="loading"
                 ></member-list>
@@ -50,6 +50,8 @@ const emits = defineEmits<{
     (event: 'goto-group-session'): void
     (event: 'goto-temp-session', contact: Member): void
 }>()
+
+const emitGotoTempSession = (member: Member) => emits('goto-temp-session', member)
 
 </script>
   
