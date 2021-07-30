@@ -1,6 +1,13 @@
 import { useStorage } from "@vueuse/core";
-import { Event, Friend, Group, Member, MiraiApi, useMiraiApi } from "mirai-reactivity-ws";
-import { Ref, watch } from "vue";
+import {
+  Event,
+  Friend,
+  Group,
+  Member,
+  MiraiApi,
+  useMiraiApi,
+} from "mirai-reactivity-ws";
+import { ref, Ref, watch } from "vue";
 
 /**
  * Session: 用于表示一个独立的会话，消息列表中的一个条目即为一个Session。
@@ -26,9 +33,10 @@ export type ContactForSessionType<T extends SessionType> = T extends "group"
 export type SessionIdentity<T extends SessionType = SessionType> = [number, T];
 
 export function sessionIdentityEquals<T extends SessionType = SessionType>(
-  a: SessionIdentity<T>,
-  b: SessionIdentity<T>
+  a: SessionIdentity<T> | undefined,
+  b: SessionIdentity<T> | undefined
 ) {
+  if (!a || !b) return
   return a[0] == b[0] && a[1] == b[1];
 }
 
@@ -87,7 +95,7 @@ export type SessionList = Session[];
 
 const sessionStoreKey = "chat-sessions";
 
-const globalSessionList = useStorage(sessionStoreKey, [] as SessionList)
+const globalSessionList = useStorage(sessionStoreKey, [] as SessionList);
 
 export function useSessionList(): Ref<SessionList> {
   return globalSessionList;
@@ -154,6 +162,12 @@ function getSessionMeta(event: Event): SessionMeta | undefined {
   return undefined;
 }
 
+const currentSessionIdentity: Ref<SessionIdentity | undefined> = ref();
+
+export function useCurrentSessionIdentity() {
+  return currentSessionIdentity;
+}
+
 function eventDispatcher(event: Event) {
   const sessionMeta = getSessionMeta(event);
   if (!sessionMeta) return;
@@ -169,7 +183,7 @@ function eventDispatcher(event: Event) {
     return;
   }
   session.events.push(event);
-  if (event.type != "SentMessage") session.unreadCount++;
+  if (event.type != "SentMessage" && !sessionIdentityEquals(currentSessionIdentity.value, session.identity)) session.unreadCount++;
 }
 
 /**
@@ -177,15 +191,15 @@ function eventDispatcher(event: Event) {
  */
 let registered = false;
 
-const miraiApi = useMiraiApi()
+const miraiApi = useMiraiApi();
 
 export function registerEventDispatcherForSession(onSuccess: () => void) {
   function registerScheduler() {
-    if (!miraiApi.value || registered) return
+    if (!miraiApi.value || registered) return;
     miraiApi.value.addMiraiEventListener(eventDispatcher);
     registered = true;
-    onSuccess()
+    onSuccess();
   }
-  watch(() => miraiApi.value != undefined, registerScheduler)
-  registerScheduler()
+  watch(() => miraiApi.value != undefined, registerScheduler);
+  registerScheduler();
 }

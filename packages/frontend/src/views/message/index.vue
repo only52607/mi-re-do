@@ -21,22 +21,26 @@
                     <menu-switch v-model:collapsed="sessionListCollapsed" />
                 </template>
                 <template #headerExtra>
-                    <!-- <a-button type="text" class="more-button" @click="drawerVisible=true"> 
+                    <a-button type="text" class="more-button" @click="drawerVisible=!drawerVisible"> 
                         <template #icon>
-                            <more-outlined />
-                        </template> 
-                    </a-button> -->
+                            <menu-outlined />
+                        </template>
+                    </a-button>
+                </template>
+                <template #content>
+                    <a-drawer
+                    title="Basic"
+                    placement="right"
+                    :closable="true"
+                    :visible="drawerVisible"
+                    :get-container="false"
+                    :wrap-style="{ position: 'absolute' }"
+                    @close="drawerVisible = false"
+                    >
+                        <p>Some contents...</p>
+                    </a-drawer>
                 </template>
             </chat-screen>
-            <!-- <a-drawer
-                title="Basic Drawer"
-                placement="right"
-                :closable="false"
-                :visible="drawerVisible"
-                :get-container="false"
-                >
-                <p>Some contents...</p>
-            </a-drawer> -->
         </div>
     </div>
 </template>
@@ -44,7 +48,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from "vue";
 import SessionList from "@/components/list/SessionList.vue"
-import { sessionIdentityEquals, useSessionList } from "@/use/session";
+import { sessionIdentityEquals, useCurrentSessionIdentity, useSessionList } from "@/use/session";
 import type { SessionIdentity } from "@/use/session";
 import ChatScreen from "./ChatScreen.vue"
 import { useMiraiApi, messageBuilder, useBotProfile } from "mirai-reactivity-ws";
@@ -53,7 +57,7 @@ import { message } from "ant-design-vue";
 import { useConnectionInfo } from "@/use";
 import { sessionIdentityAsString } from '@/use/session';
 import { useRoute } from "vue-router";
-import { MoreOutlined } from '@ant-design/icons-vue';
+import { MenuOutlined } from '@ant-design/icons-vue';
 
 const sessionList = useSessionList()
 const { botProfile } = useBotProfile()
@@ -65,6 +69,7 @@ const pendingText = ref("")
 const miraiApi = useMiraiApi()
 const scrollChatListToButtom = ref(true)
 const drawerVisible = ref(false)
+const currentSessionIdentity = useCurrentSessionIdentity()
 
 onMounted(() => {
     if (route.query["sessionIdentityString"]) {
@@ -79,6 +84,7 @@ const selectedSession = computed(() => {
     if (session) {
         session.unreadCount = 0
     }
+    currentSessionIdentity.value = session?.identity
     return session
 })
 
