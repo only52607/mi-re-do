@@ -9,7 +9,11 @@
     <a-menu mode="inline">
         <a-empty v-if="sessionList.length == 0" />
         <template v-else>
-            <a-menu-item id="session-item" v-for="(eventBox, i) in sessionList" :key="sessionIdentityAsString(eventBox.identity)">
+            <a-menu-item
+                id="session-item"
+                v-for="(eventBox, i) in sessionList"
+                :key="sessionIdentityAsString(eventBox.identity)"
+            >
                 <template #icon>
                     <template v-if="eventBox.type == 'friend'">
                         <user-avatar
@@ -69,11 +73,10 @@ defineProps<{
   
 <style lang="less" scoped>
 #session-name {
-    overflow:hidden;
-    text-overflow:ellipsis;
-    -webkit-text-overflow:ellipsis;
-    -o-text-overflow:ellipsis;
-    white-space:nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    white-space: nowrap;
 }
-
 </style>

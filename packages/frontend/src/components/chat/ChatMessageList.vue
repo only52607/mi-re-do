@@ -1,10 +1,14 @@
 <template>
     <div id="chat-list">
         <template v-for="event in session.events">
-            <chat-message-list-item  @display-image="displayImage" :event="event"  >
-            </chat-message-list-item>
+            <chat-message-list-item @display-image="displayImage" :event="event"></chat-message-list-item>
         </template>
-        <image-modal :visible="imageModalVisible" title="查看图片" :image-url="imageUrl" @update:visible="(value) => imageModalVisible = value" />
+        <image-modal
+            :visible="imageModalVisible"
+            title="查看图片"
+            :image-url="imageUrl"
+            @update:visible="(value) => imageModalVisible = value"
+        />
     </div>
 </template>
 

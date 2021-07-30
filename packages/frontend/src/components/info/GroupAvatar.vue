@@ -1,8 +1,5 @@
 <template>
-    <a-avatar 
-        :src="`https://p.qlogo.cn/gh/${groupId}/${groupId}/0`"
-        :alt="groupName"
-    />
+    <a-avatar :src="`https://p.qlogo.cn/gh/${groupId}/${groupId}/0`" :alt="groupName" />
 </template>
 
 <script setup lang="ts">

@@ -27,7 +27,9 @@
         </a-descriptions>
         <a-divider></a-divider>
         <a-descriptions title="MI-RE-DO">
-          <a-descriptions-item :span="3" label="Github"><a href="https://github.com/only52607/mi-re-do"> only52607/MI-RE-DO </a></a-descriptions-item>
+          <a-descriptions-item :span="3" label="Github">
+            <a href="https://github.com/only52607/mi-re-do">only52607/MI-RE-DO</a>
+          </a-descriptions-item>
         </a-descriptions>
       </a-card>
     </div>

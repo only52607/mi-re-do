@@ -1,6 +1,6 @@
 <template>
     <a-modal :title="bot?.nickname" v-bind="$attrs" :footer="null">
-        <user-description :user-id="botId ?? 0" :profile="bot"/>
+        <user-description :user-id="botId ?? 0" :profile="bot" />
     </a-modal>
 </template>
 

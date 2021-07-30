@@ -10,9 +10,9 @@
         <a-empty v-if="!groupList" />
         <a-spin v-else-if="loading" />
         <template v-else>
-            <a-menu-item v-for="(group, i) in groupList" :key="group.id" >
+            <a-menu-item v-for="(group, i) in groupList" :key="group.id">
                 <template #icon>
-                    <group-avatar :group-id="group.id" :group-name="group.name"/>
+                    <group-avatar :group-id="group.id" :group-name="group.name" />
                 </template>
                 {{ `${group.name}(${group.id})` }}
             </a-menu-item>

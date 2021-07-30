@@ -17,30 +17,42 @@
                 </session-header>
             </div>
             <div id="chat-message-row">
-                <chat-message-list :scroll-to-buttom="scrollToButtom" @update:scrollToButtom="emitUpdateScrollToButtom" :session="session" />
+                <chat-message-list
+                    :scroll-to-buttom="scrollToButtom"
+                    @update:scrollToButtom="emitUpdateScrollToButtom"
+                    :session="session"
+                />
             </div>
             <div id="input-area">
                 <a-textarea
                     :value="pendingText"
                     placeholder="发送消息"
                     :auto-size="{ minRows: 2, maxRows: 4 }"
-                    @update:value = "emitUpdatePendingText"
+                    @update:value="emitUpdatePendingText"
                 />
             </div>
             <div id="send-row" justify="end" style="padding: 5px;">
-                <a-dropdown-button @click="$emit('send', 'text' , pendingText)" type="primary">
+                <a-dropdown-button @click="$emit('send', 'text', pendingText)" type="primary">
                     发送
                     <template #overlay>
-                        <a-menu >
-                            <a-menu-item key="message-chain" @click="$emit('send', 'message-chain' , pendingText)">以MessageChain标准形式发送
-                            </a-menu-item>
-                            <a-menu-item key="xml" @click="$emit('send', 'xml' , pendingText)">以XML消息发送
-                            </a-menu-item>
-                            <a-menu-item key="json" @click="$emit('send', 'json' , pendingText)">以JSON消息发送
-                            </a-menu-item>
+                        <a-menu>
+                            <a-menu-item
+                                key="message-chain"
+                                @click="$emit('send', 'message-chain', pendingText)"
+                            >以MessageChain标准形式发送</a-menu-item>
+                            <a-menu-item
+                                key="xml"
+                                @click="$emit('send', 'xml', pendingText)"
+                            >以XML消息发送</a-menu-item>
+                            <a-menu-item
+                                key="json"
+                                @click="$emit('send', 'json', pendingText)"
+                            >以JSON消息发送</a-menu-item>
                         </a-menu>
                     </template>
-                    <template #icon><down-outlined /></template>
+                    <template #icon>
+                        <down-outlined />
+                    </template>
                 </a-dropdown-button>
             </div>
         </div>
@@ -62,9 +74,9 @@ defineProps<{
 }>()
 
 const emits = defineEmits<{
-  (event: 'send', type: "text" | "xml" | "json" | "message-chain" , text: string): void
-  (event: 'update:pending-text', text: string): void
-  (event: 'update:scroll-to-buttom', value: boolean): VideoFacingModeEnum
+    (event: 'send', type: "text" | "xml" | "json" | "message-chain", text: string): void
+    (event: 'update:pending-text', text: string): void
+    (event: 'update:scroll-to-buttom', value: boolean): VideoFacingModeEnum
 }>()
 
 const emitUpdatePendingText = (text: string) => emits('update:pending-text', text)

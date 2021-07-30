@@ -1,16 +1,9 @@
-<!--
- * @Author: ooooonly
- * @LastEditors: ooooonly
- * @Description: 
- * @Date: 2021-01-24 12:32:02
- * @LastEditTime: 2021-02-25 21:14:20
--->
 <template>
-<a-config-provider :locale="locale">
-  <div id="app">
-    <router-view />
-  </div>
-</a-config-provider>
+  <a-config-provider :locale="locale">
+    <div id="app">
+      <router-view />
+    </div>
+  </a-config-provider>
 </template>
 
 <script lang="ts" setup>

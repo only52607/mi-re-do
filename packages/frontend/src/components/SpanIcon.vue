@@ -1,7 +1,7 @@
 <template>
   <span>
     <template v-if="icon != null">
-        <component :is="icon"  />
+      <component :is="icon" />
     </template>
     <span>{{ text }}</span>
   </span>

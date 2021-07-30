@@ -24,7 +24,11 @@
         </a-row>
         <a-row type="flex" justify="center" style="height: 75%; overflow:auto;">
             <a-col :span="20">
-                <member-list @goto-temp-session="(member) => emits('goto-temp-session', member)" :member-list="memberList" :loading="loading"></member-list>
+                <member-list
+                    @goto-temp-session="(member) => emits('goto-temp-session', member)"
+                    :member-list="memberList"
+                    :loading="loading"
+                ></member-list>
             </a-col>
         </a-row>
     </template>

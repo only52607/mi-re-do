@@ -5,9 +5,7 @@
     @back="() => $router.go(-1)"
     style="background:#fff"
   >
-    <template #extra>
-        
-    </template>
+    <template #extra></template>
   </a-page-header>
   <router-view />
 </template>

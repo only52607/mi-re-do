@@ -1,4 +1,4 @@
-import { BaseLayout } from '@/layouts'
+import { BaseLayout } from "@/layouts";
 
 import {
   DesktopOutlined,
@@ -6,21 +6,21 @@ import {
   TeamOutlined,
   UserOutlined,
   SettingOutlined,
-  ApiOutlined
-} from '@ant-design/icons-vue'
+  ApiOutlined,
+} from "@ant-design/icons-vue";
 
-import type { RouteRecordRaw } from 'vue-router'
+import type { RouteRecordRaw } from "vue-router";
 
-const menuRoute =  {
-  path: '/',
+const menuRoute = {
+  path: "/",
   component: BaseLayout,
   meta: {
-    flattened: true
+    flattened: true,
   },
   children: [
     {
-      path: '',
-      name: 'home',
+      path: "",
+      name: "home",
       component: () => import("@/views/home.vue"),
       meta: {
         title: "控制中心",
@@ -28,8 +28,8 @@ const menuRoute =  {
       },
     },
     {
-      path: 'message',
-      name: 'message',
+      path: "message",
+      name: "message",
       component: () => import("@/views/message/index.vue"),
       meta: {
         title: "消息",
@@ -37,8 +37,8 @@ const menuRoute =  {
       },
     },
     {
-      path: 'friend',
-      name: 'friend',
+      path: "friend",
+      name: "friend",
       component: () => import("@/views/friend/index.vue"),
       meta: {
         title: "好友",
@@ -46,8 +46,8 @@ const menuRoute =  {
       },
     },
     {
-      path: 'group',
-      name: 'group',
+      path: "group",
+      name: "group",
       component: () => import("@/views/group/index.vue"),
       meta: {
         title: "群聊",
@@ -55,8 +55,8 @@ const menuRoute =  {
       },
     },
     {
-      path: 'plugin',
-      name: 'plugin',
+      path: "plugin",
+      name: "plugin",
       component: () => import("@/views/plugin/index.vue"),
       meta: {
         title: "插件",
@@ -64,8 +64,8 @@ const menuRoute =  {
       },
     },
     {
-      path: 'setting',
-      name: 'setting',
+      path: "setting",
+      name: "setting",
       component: () => import("@/views/setting/index.vue"),
       meta: {
         title: "配置",
@@ -73,18 +73,18 @@ const menuRoute =  {
       },
     },
   ],
-}
+};
 
-const testRoutes:RouteRecordRaw[] = [
+const testRoutes: RouteRecordRaw[] = [
   {
-    path: '/test',
+    path: "/test",
     component: BaseLayout,
     meta: {
-      hiddien: true
-    }
-  }
-]
+      hiddien: true,
+    },
+  },
+];
 
-export const routes:RouteRecordRaw[] = [menuRoute]
+export const routes: RouteRecordRaw[] = [menuRoute];
 
-export default routes
+export default routes;

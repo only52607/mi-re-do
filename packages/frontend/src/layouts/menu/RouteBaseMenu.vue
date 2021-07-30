@@ -6,19 +6,17 @@
  * @LastEditTime: 2021-02-25 10:45:54
 -->
 <template>
-  <a-menu  v-model:selectedKeys="selectedKeys">
-    <template v-for="routeItem in flatternRoutes(routes)" >
-
+  <a-menu v-model:selectedKeys="selectedKeys">
+    <template v-for="routeItem in flatternRoutes(routes)">
       <!-- Show MenuItem -->
       <template v-if="!routeItem.children || routeItem.children.length == 0">
-        <route-base-menu-item :route="routeItem" :key="routeItem.meta?.fullPath"/>
+        <route-base-menu-item :route="routeItem" :key="routeItem.meta?.fullPath" />
       </template>
 
       <!-- Show SubMenu -->
       <template v-else>
-        <route-base-sub-menu :route="routeItem" :key="routeItem.meta?.fullPath"/>
+        <route-base-sub-menu :route="routeItem" :key="routeItem.meta?.fullPath" />
       </template>
-      
     </template>
   </a-menu>
 </template>
@@ -37,7 +35,7 @@ const props = defineProps<{
 }>()
 const route = props.currentRoute!
 const selectedKeys = ref<string[]>([route.path]);
-watch(() => route.path,() => {
+watch(() => route.path, () => {
   selectedKeys.value = [route.path]
 })
 

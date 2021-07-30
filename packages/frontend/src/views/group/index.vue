@@ -2,19 +2,19 @@
     <a-row style="height:100%;">
         <a-col :span="8" style="height:100%; overflow:auto; background-color: white;">
             <group-list
-                :loading="groupsState!='done'"
+                :loading="groupsState != 'done'"
                 style="height:100%;"
                 :group-list="groups"
                 v-model:selectedKeys="selectedKeys"
             />
         </a-col>
         <a-col :span="16" style="height:100%;">
-            <member-details 
+            <member-details
                 @goto-group-session="gotoGroupSession"
                 @goto-temp-session="gotoTempSession"
-                :group="selectedGroup" 
-                :member-list="members" 
-                :loading="memberlistState!='done'" 
+                :group="selectedGroup"
+                :member-list="members"
+                :loading="memberlistState != 'done'"
             />
         </a-col>
     </a-row>
@@ -36,22 +36,22 @@ const selectedGroupId = computed(() => {
     if (!groups || selectedKeys.value.length == 0) return;
     return selectedKeys.value[0]
 });
-const selectedGroup = computed(() => { 
+const selectedGroup = computed(() => {
     if (!selectedGroupId || !groups.value) return;
-    return groups.value.find((group) =>  group.id == selectedGroupId.value )
+    return groups.value.find((group) => group.id == selectedGroupId.value)
 })
 const { members, state: memberlistState, emitUpdate } = useMemberList(selectedGroupId);
 onMounted(() => emitUpdate())
 
 function gotoGroupSession() {
-  if (!selectedGroup.value) return
-  pushEmptySession("group", selectedGroup.value)
-  router.push({ name: "message", query: { sessionIdentityString: sessionIdentityAsString([selectedGroup.value.id, "group"]) } })
+    if (!selectedGroup.value) return
+    pushEmptySession("group", selectedGroup.value)
+    router.push({ name: "message", query: { sessionIdentityString: sessionIdentityAsString([selectedGroup.value.id, "group"]) } })
 }
 
 function gotoTempSession(contact: Member) {
-  pushEmptySession("temp", contact)
-  router.push({ name: "message", query: { sessionIdentityString: sessionIdentityAsString([contact.id, "temp"]) } })
+    pushEmptySession("temp", contact)
+    router.push({ name: "message", query: { sessionIdentityString: sessionIdentityAsString([contact.id, "temp"]) } })
 }
 
 </script>

@@ -12,7 +12,9 @@
                 <a-popover trigger="click">
                     <template #content>
                         <p>{{ member.memberName }}</p>
-                        <p> <member-tag :member="member" /> </p>
+                        <p>
+                            <member-tag :member="member" />
+                        </p>
                         <a-divider></a-divider>
                         <a-button
                             type="primary"
@@ -23,14 +25,19 @@
                     </template>
                     <a-card :hoverable="true">
                         <div style="display: flex;">
-                            <user-avatar style="margin: 0px auto;" :user-id="member.id" :nickname="member.memberName" />
+                            <user-avatar
+                                style="margin: 0px auto;"
+                                :user-id="member.id"
+                                :nickname="member.memberName"
+                            />
                         </div>
                         <a-divider></a-divider>
                         <div style="overflow: hidden;">
                             <span
                                 style="overflow: hidden; text-overflow:ellipsis; white-space: nowrap;"
                             >
-                            <member-tag :member="member" /> {{ member.memberName }}
+                                <member-tag :member="member" />
+                                {{ member.memberName }}
                             </span>
                         </div>
                     </a-card>

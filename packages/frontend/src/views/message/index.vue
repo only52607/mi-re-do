@@ -17,10 +17,10 @@
                 v-model:session-list-collapsed="sessionListCollapsed"
                 v-model:scroll-to-buttom="scrollChatListToButtom"
             >
-            <template #backIcon>
-                <menu-switch v-model:collapsed="sessionListCollapsed" />
-            </template>
-        </chat-screen>
+                <template #backIcon>
+                    <menu-switch v-model:collapsed="sessionListCollapsed" />
+                </template>
+            </chat-screen>
         </div>
     </div>
 </template>

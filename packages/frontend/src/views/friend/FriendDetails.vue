@@ -3,11 +3,10 @@
     <a-spin v-else-if="loading" />
     <template v-else>
         <a-card :loading="loading">
-            <template #cover>
-            </template>
+            <template #cover></template>
             <a-card-meta :title="profile.nickname" :description="profile.sign">
                 <template #avatar>
-                    <user-avatar :user-id="friend?.id ?? 0" :nickname="profile.nickname"/>
+                    <user-avatar :user-id="friend?.id ?? 0" :nickname="profile.nickname" />
                 </template>
             </a-card-meta>
             <a-divider></a-divider>

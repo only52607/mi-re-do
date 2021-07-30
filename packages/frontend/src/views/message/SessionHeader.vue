@@ -5,7 +5,7 @@
         :title="session.contact.nickname"
         :sub-title="session.contact.id"
         style="background:#fff;"
-        @back="() => {}"
+        @back="() => { }"
     >
         <template #backIcon>
             <slot name="backIcon"></slot>
@@ -16,7 +16,7 @@
         :title="session.contact.name"
         :sub-title="session.contact.id"
         style="background:#fff;"
-        @back="() => {}"
+        @back="() => { }"
     >
         <template #backIcon>
             <slot name="backIcon"></slot>
@@ -27,7 +27,7 @@
         :title="session.contact.memberName"
         :sub-title="session.contact.id"
         style="background:#fff;"
-        @back="() => {}"
+        @back="() => { }"
     >
         <template #backIcon>
             <slot name="backIcon"></slot>

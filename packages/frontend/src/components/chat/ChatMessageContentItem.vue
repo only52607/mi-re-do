@@ -1,6 +1,8 @@
 <template>
     <template v-if="message.type == 'Source'"></template>
-    <template v-else-if="message.type == 'Plain'"><span>{{ message.text }}</span></template>
+    <template v-else-if="message.type == 'Plain'">
+        <span>{{ message.text }}</span>
+    </template>
     <template v-else-if="message.type == 'Face'">{{ `[${message.name}]` }}</template>
     <template v-else-if="message.type == 'Image'">
         <img @click="$emit('display-image', getImageUrl(message))" :src="message.url ?? undefined" />
@@ -16,11 +18,15 @@
         <a-tag>@{{ message.display }}[{{ message.target }}]</a-tag>
     </template>
     <template v-else-if="message.type == 'Voice'">
-        <a-tag>语音: <a :href="message.url??undefined"> {{ message.voiceId }} </a></a-tag>
+        <a-tag>
+            语音:
+            <a :href="message.url ?? undefined">{{ message.voiceId }}</a>
+        </a-tag>
         <br />
-        <audio :src="message.url??undefined" controls="true">
-            Your browser does not support the audio element.
-        </audio>
+        <audio
+            :src="message.url ?? undefined"
+            controls="true"
+        >Your browser does not support the audio element.</audio>
     </template>
     <template v-else-if="message.type == 'Poke'">
         <a-tag>Poke {{ message.name }}</a-tag>

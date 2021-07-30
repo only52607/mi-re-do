@@ -109,9 +109,9 @@ async function connectAutomatic() {
     const { api } = await createMiraiWebsocketApi(connectionInfo.value)
     setDefaultMiraiApi(api)
     connectionModalVisible.value = false
-    notification.success({message: "自动连接服务器成功"})
+    notification.success({ message: "自动连接服务器成功" })
   } catch {
-    notification.error({message: "自动连接服务器失败"})
+    notification.error({ message: "自动连接服务器失败" })
     showConnectModal()
   }
   connecting.value = false

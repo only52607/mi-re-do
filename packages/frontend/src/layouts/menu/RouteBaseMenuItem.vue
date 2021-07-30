@@ -1,6 +1,10 @@
 <template>
     <a-menu-item :key="route.meta?.fullPath">
-        <router-link-icon :icon="route.meta?.icon" :text="route.meta?.title" :to="route.meta?.fullPath" />
+        <router-link-icon
+            :icon="route.meta?.icon"
+            :text="route.meta?.title"
+            :to="route.meta?.fullPath"
+        />
     </a-menu-item>
 </template>
 

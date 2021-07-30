@@ -1,7 +1,7 @@
 <template>
     <div class="content">
         <template v-for="item in content">
-            <chat-message-content-item @display-image="emitDisplayImage"  :message="item" />
+            <chat-message-content-item @display-image="emitDisplayImage" :message="item" />
         </template>
     </div>
 </template>
@@ -15,7 +15,7 @@ defineProps<{
     content: MessageChain
 }>()
 const emits = defineEmits<{
-  (event: "display-image", url: string): void
+    (event: "display-image", url: string): void
 }>()
 
 function emitDisplayImage(url: string) {

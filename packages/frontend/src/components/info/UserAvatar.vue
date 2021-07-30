@@ -1,5 +1,5 @@
 <template>
-    <a-avatar 
+    <a-avatar
         :src="`https://q.qlogo.cn/headimg_dl?bs=qq&dst_uin=${userId}&src_uin=www.jlwz.cn&fid=blog&spec=100`"
         :alt="nickname"
     />

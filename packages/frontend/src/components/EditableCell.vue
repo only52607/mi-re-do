@@ -7,14 +7,14 @@
 -->
 <template>
   <div class="editable-cell">
-      <div v-if="editing" class="editable-cell-input-wrapper">
-        <check-outlined class="editable-cell-icon-check" @click="finish" />
-        <a-input v-model:value="inputValue" @pressEnter="finish" />
-      </div>
-      <div v-else class="editable-cell-text-wrapper">
-        <edit-outlined class="editable-cell-icon" @click="startEdit" />
-        {{value || ' '}}
-      </div>
+    <div v-if="editing" class="editable-cell-input-wrapper">
+      <check-outlined class="editable-cell-icon-check" @click="finish" />
+      <a-input v-model:value="inputValue" @pressEnter="finish" />
+    </div>
+    <div v-else class="editable-cell-text-wrapper">
+      <edit-outlined class="editable-cell-icon" @click="startEdit" />
+      {{ value || ' ' }}
+    </div>
   </div>
 </template>
 
@@ -24,7 +24,7 @@ import { defineEmits, defineProps, ref, useAttrs } from 'vue';
 const props = defineProps<{
   value: any
 }>()
-const emit = defineEmits(["change","update:value"])
+const emit = defineEmits(["change", "update:value"])
 const inputValue = ref("")
 const editing = ref(false)
 const oldValue = ref<string | undefined>("")

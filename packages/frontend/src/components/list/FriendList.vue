@@ -10,7 +10,7 @@
         <a-empty v-if="!friendList" />
         <a-spin v-else-if="loading" />
         <template v-else>
-            <a-menu-item v-for="(friend, i) in friendList" :key="friend.id" >
+            <a-menu-item v-for="(friend, i) in friendList" :key="friend.id">
                 <template #icon>
                     <user-avatar :user-id="friend.id" :nickname="friend.nickname" />
                 </template>
