@@ -133,7 +133,8 @@ async function handleSend(type: "xml" | "json" | "text" | "message-chain", text:
         }
     }
     #right {
-        flex: 1 1 auto;
+        flex: 1 1 0;
+        width: 0;
         height: 100%;
     }
 }

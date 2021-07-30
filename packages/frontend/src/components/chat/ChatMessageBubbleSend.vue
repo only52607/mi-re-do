@@ -34,6 +34,8 @@ function emitDisplayImage(url: string) {
     margin: 0px 15px 0px 0px;
     position: relative;
     color: #fff;
+    max-width: 80%;
+    word-break: break-all;
 }
 .content::after {
     content: "";

@@ -6,7 +6,7 @@
     </a-layout-sider>
     <a-layout>
       <a-layout-header id="header">
-        <menu-switch v-model:collapsed="collapsed" />
+        <menu-switch id="switch" v-model:collapsed="collapsed" />
         <span>{{ route.meta.title }}</span>
         <bot-dropdown
           :bot-id="connectionInfo?.authentication?.qq"
@@ -182,5 +182,9 @@ async function connect(params: MiraiWsConnectParams) {
   margin: 18px 0px 10px 0;
   font-weight: bold;
   text-align: center;
+}
+
+#switch {
+  line-height: 64px;
 }
 </style>

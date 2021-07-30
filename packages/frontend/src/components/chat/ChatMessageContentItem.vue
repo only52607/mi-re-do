@@ -32,16 +32,24 @@
         <a-tag>Poke {{ message.name }}</a-tag>
     </template>
     <template v-else-if="message.type == 'Xml'">
-        <a-tag>XML {{ message.xml }}</a-tag>
+        <a-tag>XML</a-tag>
+        <br />
+        {{ message.xml }}
     </template>
     <template v-else-if="message.type == 'MusicShare'">
-        <a-tag>音乐分享 {{ message.musicUrl }}</a-tag>
+        <a-tag>音乐分享</a-tag>
+        <br />
+        {{ message.musicUrl }}
     </template>
     <template v-else-if="message.type == 'App'">
-        <a-tag>App {{ message.content }}</a-tag>
+        <a-tag>App</a-tag>
+        <br /> 
+        {{ message.content }}
     </template>
     <template v-else-if="message.type == 'Json'">
-        <a-tag>App {{ message.json }}</a-tag>
+        <a-tag>Json</a-tag>
+        <br />
+        {{ message.json }}
     </template>
     <template v-else-if="message.type == 'Quote'">
         <a-tag>引用 {{ message.id }}</a-tag>

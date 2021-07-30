@@ -11,16 +11,16 @@ defineProps({
 })
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .trigger {
   font-size: 18px;
-  line-height: 64px;
+  // line-height: 64px;
   padding: 0 24px;
   cursor: pointer;
   transition: color 0.3s;
 }
 
 .trigger:hover {
-  color: #1890ff;
+  color: @primary-color;
 }
 </style>

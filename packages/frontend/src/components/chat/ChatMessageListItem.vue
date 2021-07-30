@@ -81,11 +81,13 @@ function emitDisplayImage(url: string) {
     display: flex;
     justify-content: flex-end;
     padding: 10px;
+    width: 100%;
     #avatar {
         flex: 0 0 auto;
     }
     #bubble-and-name {
-        flex: 1 1 auto;
+        flex: 1 1 0;
+        width: 0;
     }
 }
 </style>

@@ -72,5 +72,6 @@ function displayImage(url: string) {
 #chat-list {
     overflow: auto;
     height: 100%;
+    width: 100%;
 }
 </style>

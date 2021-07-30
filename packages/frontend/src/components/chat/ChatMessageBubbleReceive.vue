@@ -33,6 +33,8 @@ function emitDisplayImage(url: string) {
     border-radius: 5px;
     margin: 0px 0 0px 15px;
     position: relative;
+    max-width: 80%;
+    word-break: break-all;
 }
 .content::after {
     content: "";
