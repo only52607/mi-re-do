@@ -23,6 +23,7 @@
       :visible="connectionModalVisible"
       @connect="connect"
       @cancel="cancelModal"
+      :connection-info="connectionInfo"
     ></connection-modal>
     <bot-profile-modal
       :visible="botprofileModalVisible"
@@ -46,6 +47,7 @@ import { useConnectionInfo } from "@/use";
 import BotProfileModal from "@/components/modal/BotProfileModal.vue"
 import { registerEventDispatcher } from "@/use/session";
 import { ref } from "vue";
+import type { MiraiWsConnectParams } from "mirai-reactivity-ws";
 
 const { botProfile } = useBotProfile()
 const connectionInfo = useConnectionInfo()
@@ -86,35 +88,38 @@ function showConnectModal() {
 }
 
 function cancelModal() {
-  if (miraiApi.value) {
-    connectionModalVisible.value = false
-  } else {
+  if (!miraiApi.value) {
     message.warning("请先连接到服务器")
+    return
   }
+  connectionModalVisible.value = false
+}
+
+function connectionInfoAvailable() {
+  return connectionInfo.value &&
+    connectionInfo.value.address &&
+    connectionInfo.value.authentication.qq &&
+    connectionInfo.value.authentication.verifyKey
 }
 
 async function connectAutomatic() {
-  if (!connectionInfo.value) return
+  if (!connectionInfo.value || !connectionInfoAvailable()) return
   try {
     connecting.value = true
     const { api } = await createMiraiWebsocketApi(connectionInfo.value)
     setDefaultMiraiApi(api)
     connectionModalVisible.value = false
-    notification.success({
-      message: "自动连接服务器成功"
-    })
-    connecting.value = false
+    notification.success({message: "自动连接服务器成功"})
   } catch {
-    notification.error({
-      message: "自动连接服务器失败"
-    })
+    notification.error({message: "自动连接服务器失败"})
     showConnectModal()
   }
+  connecting.value = false
 }
 
 onMounted(async () => {
   if (miraiApi.value) return  // 已登录无需重复连接
-  if (!connectionInfo.value) {  // 没有连接信息，弹出连接框
+  if (!connectionInfo.value || !connectionInfoAvailable()) {  // 没有连接信息，弹出连接框
     showConnectModal()
     return
   }
@@ -132,20 +137,16 @@ async function onMenuSelect(itemName: string) {
   }
 }
 
-async function connect(connectInfo: any) {
+async function connect(params: MiraiWsConnectParams) {
   try {
     connecting.value = true
-    const param = {
-      address: connectInfo.address,
-      authentication: { qq: parseInt(connectInfo.qq), verifyKey: connectInfo.verifyKey }
-    }
-    const { api } = await createMiraiWebsocketApi(param)
+    const { api } = await createMiraiWebsocketApi(params)
     setDefaultMiraiApi(api)
     connectionModalVisible.value = false
     notification.success({
       message: "连接服务器成功"
     })
-    connectionInfo.value = param  // 保存信息
+    connectionInfo.value = params  // 保存信息
   } catch (e) {
     const reason = e?.message ?? ""
     message.error(`连接服务器失败!  ${reason}`)

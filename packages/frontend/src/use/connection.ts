@@ -1,37 +1,10 @@
-import { ref, Ref, watchEffect } from "vue";
+import { MiraiWsConnectParams } from "mirai-reactivity-ws";
+import { useStorage } from "@vueuse/core";
 
-export interface ConnectionInfo {
-    address: string,
-    authentication: { qq: number, verifyKey: string }
-}
+const storeKey = "connection:mirai-console-websocket"
 
-const connectionInfo: Ref<ConnectionInfo | undefined> = ref()
-
-const storeKey = "mirai-console-websocket"
-
-function initConnectionInfo() {
-    const connectInfoString = localStorage.getItem(storeKey)
-    if (!connectInfoString) {
-        return
-    }
-    const connectInfoObj = JSON.parse(connectInfoString)
-    connectionInfo.value = connectInfoObj
-}
-
-let inited = false
+const globalConnectionInfo = useStorage(storeKey, {} as MiraiWsConnectParams) // address:"", authentication:{ qq:0 , verifyKey:"" }
 
 export function useConnectionInfo() {
-    if (!inited) {
-        initConnectionInfo()
-    }
-    return connectionInfo
+    return globalConnectionInfo
 }
-
-/**
- * 监听并保存信息
- */
-watchEffect(() => {
-    if (connectionInfo.value != undefined) {
-        localStorage.setItem(storeKey, JSON.stringify(connectionInfo.value))
-    }
-})

@@ -1,11 +1,11 @@
 <template>
     <a-modal title="连接到 MiraiConsole" v-bind="$attrs" :visible="visible" :footer="null">
-        <a-form :rules="rules" :model="connectInfo" ref="formRef">
+        <a-form :rules="rules" :model="connectionForm" ref="formRef">
             <a-form-item label="通道">
-                <a-input v-model:value="connectInfo.host">
+                <a-input v-model:value="connectionForm.host">
                     <template #addonBefore>ws://</template>
                     <template #addonAfter>
-                        <a-select v-model:value="connectInfo.channel">
+                        <a-select v-model:value="connectionForm.channel">
                             <a-select-option value="all">all</a-select-option>
                             <a-select-option value="message">message</a-select-option>
                             <a-select-option value="event">event</a-select-option>
@@ -14,10 +14,10 @@
                 </a-input>
             </a-form-item>
             <a-form-item label="Verify Key">
-                <a-input v-model:value="connectInfo.verifyKey"></a-input>
+                <a-input v-model:value="connectionForm.verifyKey"></a-input>
             </a-form-item>
             <a-form-item label="QQ">
-                <a-input v-model:value="connectInfo.qq"></a-input>
+                <a-input v-model:value="connectionForm.qq"></a-input>
             </a-form-item>
             <a-form-item>
                 <a-button type="primary" :loading="connecting" @click="onClickConnect">连接</a-button>
@@ -30,22 +30,28 @@
 import { defineEmits, defineProps, reactive } from "@vue/runtime-core";
 import { message } from "ant-design-vue";
 import { ref } from "vue";
+import type { MiraiWsConnectParams } from "mirai-reactivity-ws";
 
-const connectInfo = reactive({
-    host: "127.0.0.1:8082",
-    channel: "all",
-    verifyKey: "1234567890",
-    qq: ""
-})
+const props = defineProps<{
+    visible: boolean,
+    connecting: boolean,
+    connectionInfo: MiraiWsConnectParams
+}>()
+
+const emit = defineEmits<{
+    (event: "connect", params: any): void
+}>()
 
 const formRef = ref();
 
-defineProps<{
-    visible: boolean,
-    connecting: boolean
-}>()
+const addressParts = props.connectionInfo?.address?.match(/ws:\/\/(.+)\/(all|message|event)/)
 
-const emit = defineEmits(["connect"])
+const connectionForm = reactive({
+    host: addressParts?.[1] ?? "127.0.0.1:8082",
+    channel: addressParts?.[2] ?? "all",
+    verifyKey: props.connectionInfo?.authentication?.verifyKey ?? "1234567890",
+    qq: props.connectionInfo?.authentication?.qq?.toString() ?? ""
+})
 
 const rules = {
     verifyKey: [
@@ -58,11 +64,11 @@ const rules = {
 };
 
 function onClickConnect() {
-    if (connectInfo.channel.length == 0) {
+    if (connectionForm.channel.length == 0) {
         message.warning("请输入verify key")
         return
     }
-    if (connectInfo.qq.length == 0) {
+    if (connectionForm.qq.length == 0) {
         message.warning("请输入qq号")
         return
     }
@@ -70,9 +76,11 @@ function onClickConnect() {
         .validate()
         .then(() => {
             emit("connect", {
-                address: `ws://${connectInfo.host}/${connectInfo.channel}`,
-                verifyKey:connectInfo.verifyKey,
-                qq:connectInfo.qq
+                address: `ws://${connectionForm.host}/${connectionForm.channel}`,
+                authentication: {
+                    verifyKey: connectionForm.verifyKey,
+                    qq: parseInt(connectionForm.qq)
+                }
             })
         })
 }
