@@ -52,10 +52,10 @@
         {{ message.json }}
     </template>
     <template v-else-if="message.type == 'Quote'">
-        <a-tag>引用 {{ message.id }}</a-tag>
+        <a-tag>引用 {{ message.id }}</a-tag> 
     </template>
     <template v-else-if="message.type == 'File'">
-        <a-tag>文件 {{ message.id }}</a-tag>
+        <a-tag class="tag">文件</a-tag> {{ message.id }}
     </template>
     <template v-else-if="message.type == 'Forward'">
         <a-tag>转发消息 {{ message.title }}</a-tag>
@@ -88,6 +88,7 @@ function getImageUrl(message: SingleMessage) {
 <style lang="less" scoped>
 img {
     max-height: 150px;
+    max-width: 100%;
     border-radius: 5px;
     cursor: pointer;
     -webkit-transition: all 0.5s;

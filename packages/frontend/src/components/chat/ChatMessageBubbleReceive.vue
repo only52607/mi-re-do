@@ -1,5 +1,5 @@
 <template>
-    <div class="content">
+    <div :class="{ content: true, multi: !isPureImageMessage }">
         <template v-for="item in content">
             <chat-message-content-item @display-image="emitDisplayImage" :message="item" />
         </template>
@@ -9,9 +9,9 @@
 
 <script setup lang="ts">
 import type { MessageChain } from 'mirai-reactivity-ws';
-import { defineProps } from 'vue';
+import { computed, defineProps } from 'vue';
 import ChatMessageContentItem from "./ChatMessageContentItem.vue"
-defineProps<{
+const props = defineProps<{
     content: MessageChain
 }>()
 const emits = defineEmits<{
@@ -22,13 +22,19 @@ function emitDisplayImage(url: string) {
     emits("display-image", url)
 }
 
+const isPureImageMessage = computed(() => {
+    if (props.content.length != 2) return false
+    const secondMessageType = props.content[1].type
+    return secondMessageType == "Image"
+})
+
 </script>
 
 
 <style lang="less" scoped>
 .content {
     background-color: #fff;
-    padding: 5px 8px;
+    // padding: 5px 8px;
     display: inline-block;
     border-radius: 5px;
     margin: 0px 0 0px 15px;
@@ -36,6 +42,11 @@ function emitDisplayImage(url: string) {
     max-width: 80%;
     word-break: break-all;
 }
+
+.multi {
+    padding: 5px 8px;
+}
+
 .content::after {
     content: "";
     border: 8px solid #ffffff00;
