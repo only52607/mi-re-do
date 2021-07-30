@@ -1,5 +1,4 @@
 <template>
-    <!-- <div> </div> -->
     <a-page-header
         v-if="session.type == 'friend'"
         :title="session.contact.nickname"
@@ -9,6 +8,9 @@
     >
         <template #backIcon>
             <slot name="backIcon"></slot>
+        </template>
+        <template #extra>
+            <slot name="extra"></slot>
         </template>
     </a-page-header>
     <a-page-header
@@ -21,6 +23,9 @@
         <template #backIcon>
             <slot name="backIcon"></slot>
         </template>
+        <template #extra>
+            <slot name="extra"></slot>
+        </template>
     </a-page-header>
     <a-page-header
         v-else-if="session.type == 'temp'"
@@ -31,6 +36,9 @@
     >
         <template #backIcon>
             <slot name="backIcon"></slot>
+        </template>
+        <template #extra>
+            <slot name="extra"></slot>
         </template>
     </a-page-header>
 </template>

@@ -14,46 +14,52 @@
                     <template #backIcon>
                         <slot name="backIcon"></slot>
                     </template>
+                    <template #extra>
+                        <slot name="headerExtra"></slot>
+                    </template>
                 </session-header>
             </div>
-            <div id="chat-message-row">
-                <chat-message-list
-                    :scroll-to-buttom="scrollToButtom"
-                    @update:scrollToButtom="emitUpdateScrollToButtom"
-                    :session="session"
-                />
-            </div>
-            <div id="input-area">
-                <a-textarea
-                    :value="pendingText"
-                    placeholder="发送消息"
-                    :auto-size="{ minRows: 2, maxRows: 4 }"
-                    @update:value="emitUpdatePendingText"
-                />
-            </div>
-            <div id="send-row" justify="end" style="padding: 5px;">
-                <a-dropdown-button @click="$emit('send', 'text', pendingText)" type="primary">
-                    发送
-                    <template #overlay>
-                        <a-menu>
-                            <a-menu-item
-                                key="message-chain"
-                                @click="$emit('send', 'message-chain', pendingText)"
-                            >以MessageChain标准形式发送</a-menu-item>
-                            <a-menu-item
-                                key="xml"
-                                @click="$emit('send', 'xml', pendingText)"
-                            >以XML消息发送</a-menu-item>
-                            <a-menu-item
-                                key="json"
-                                @click="$emit('send', 'json', pendingText)"
-                            >以JSON消息发送</a-menu-item>
-                        </a-menu>
-                    </template>
-                    <template #icon>
-                        <down-outlined />
-                    </template>
-                </a-dropdown-button>
+            <div id="content">
+                <div id="chat-message-area">
+                    <chat-message-list
+                        :scroll-to-buttom="scrollToButtom"
+                        @update:scrollToButtom="emitUpdateScrollToButtom"
+                        :session="session"
+                    />
+                </div>
+                <div id="input-area">
+                    <a-textarea
+                        :value="pendingText"
+                        placeholder="发送消息"
+                        :auto-size="{ minRows: 2, maxRows: 4 }"
+                        @update:value="emitUpdatePendingText"
+                    />
+                </div>
+                <div id="send-area" justify="end" style="padding: 5px;">
+                    <a-dropdown-button @click="$emit('send', 'text', pendingText)" type="primary">
+                        发送
+                        <template #overlay>
+                            <a-menu>
+                                <a-menu-item
+                                    key="message-chain"
+                                    @click="$emit('send', 'message-chain', pendingText)"
+                                >以MessageChain标准形式发送</a-menu-item>
+                                <a-menu-item
+                                    key="xml"
+                                    @click="$emit('send', 'xml', pendingText)"
+                                >以XML消息发送</a-menu-item>
+                                <a-menu-item
+                                    key="json"
+                                    @click="$emit('send', 'json', pendingText)"
+                                >以JSON消息发送</a-menu-item>
+                            </a-menu>
+                        </template>
+                        <template #icon>
+                            <down-outlined />
+                        </template>
+                    </a-dropdown-button>
+                </div>
+                <slot name="content"></slot>
             </div>
         </div>
     </template>
@@ -94,20 +100,28 @@ const emitUpdateScrollToButtom = (value: boolean) => emits('update:scroll-to-but
     #header {
         flex: 0 1 auto;
     }
-    #chat-message-row {
-        flex: 1 0 0;
-        height: 0px;
-    }
-    #input-area {
-        flex: 0 1 auto;
-        padding-left: 2px;
-        padding-right: 2px;
-    }
-    #send-row {
+    #content {
+        flex: 1 1 0;
+        height: 0;
         display: flex;
-        flex-flow: row-reverse;
-        width: 100%;
-        flex: 0 1 auto;
+        flex-flow: column;
+        position: relative;
+        overflow: hidden;
+        #chat-message-area {
+            flex: 1 1 0;
+            height: 0;
+        }
+        #input-area {
+            flex: 0 1 auto;
+            padding-left: 2px;
+            padding-right: 2px;
+        }
+        #send-area {
+            display: flex;
+            flex-flow: row-reverse;
+            width: 100%;
+            flex: 0 1 auto;
+        }
     }
 }
 </style>
