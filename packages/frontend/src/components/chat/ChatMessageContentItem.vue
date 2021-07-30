@@ -87,7 +87,7 @@ function getImageUrl(message: SingleMessage) {
 
 <style lang="less" scoped>
 img {
-    max-width: 100px;
+    max-height: 150px;
     border-radius: 5px;
     cursor: pointer;
     -webkit-transition: all 0.5s;
