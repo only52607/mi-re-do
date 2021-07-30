@@ -1,6 +1,6 @@
-import { reactive } from "@vue/reactivity";
-import { watchEffect } from "@vue/runtime-core";
+import { useStorage } from "@vueuse/core";
 import { Event, Friend, Group, Member, MiraiApi } from "mirai-reactivity-ws";
+import { Ref } from "vue";
 
 export type SessionType = "group" | "friend" | "temp";
 
@@ -72,35 +72,26 @@ export type Session = FriendSession | GroupSession | TempSession;
 
 export type SessionList = Session[];
 
-const sessionStoreKey = "EventBoxStore";
+const sessionStoreKey = "chat-sessions";
 
-const globalSessionList = reactive([] as SessionList);
+const globalSessionList = useStorage(sessionStoreKey, [] as SessionList)
 
-export function useSessionList(): SessionList {
-  return globalSessionList as SessionList;
+export function useSessionList(): Ref<SessionList> {
+  return globalSessionList;
 }
-
-Object.assign(
-  globalSessionList,
-  JSON.parse(localStorage.getItem(sessionStoreKey) ?? "[]")
-);
-
-watchEffect(() => {
-  localStorage.setItem(sessionStoreKey, JSON.stringify(globalSessionList));
-});
 
 export function pushEmptySession<T extends SessionType>(
   type: T,
   contact: ContactForSessionType<T>
 ) {
   if (
-    globalSessionList.find(
+    globalSessionList.value.find(
       (session) =>
         session.identity[0] == contact.id && session.identity[1] == type
     )
   )
     return;
-  globalSessionList.push({
+  globalSessionList.value.push({
     type: type as any,
     contact: contact as any,
     identity: [contact.id, type] as any,
@@ -153,11 +144,11 @@ function getSessionMeta(event: Event): SessionMeta | undefined {
 function eventDispatcher(event: Event) {
   const sessionMeta = getSessionMeta(event);
   if (!sessionMeta) return;
-  const session = globalSessionList.find((box) =>
+  const session = globalSessionList.value.find((box) =>
     sessionIdentityEquals(box.identity, sessionMeta.identity)
   );
   if (!session) {
-    globalSessionList.push({
+    globalSessionList.value.push({
       ...sessionMeta,
       events: [event],
       unreadCount: 1,

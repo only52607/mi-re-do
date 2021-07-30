@@ -20,7 +20,23 @@
                 <template #backIcon>
                     <menu-switch v-model:collapsed="sessionListCollapsed" />
                 </template>
+                <template #headerExtra>
+                    <!-- <a-button type="text" class="more-button" @click="drawerVisible=true"> 
+                        <template #icon>
+                            <more-outlined />
+                        </template> 
+                    </a-button> -->
+                </template>
             </chat-screen>
+            <!-- <a-drawer
+                title="Basic Drawer"
+                placement="right"
+                :closable="false"
+                :visible="drawerVisible"
+                :get-container="false"
+                >
+                <p>Some contents...</p>
+            </a-drawer> -->
         </div>
     </div>
 </template>
@@ -37,6 +53,7 @@ import { message } from "ant-design-vue";
 import { useConnectionInfo } from "@/use";
 import { sessionIdentityAsString } from '@/use/session';
 import { useRoute } from "vue-router";
+import { MoreOutlined } from '@ant-design/icons-vue';
 
 const sessionList = useSessionList()
 const { botProfile } = useBotProfile()
@@ -47,6 +64,7 @@ const sessionListCollapsed = ref(false)
 const pendingText = ref("")
 const miraiApi = useMiraiApi()
 const scrollChatListToButtom = ref(true)
+const drawerVisible = ref(false)
 
 onMounted(() => {
     if (route.query["sessionIdentityString"]) {
@@ -57,7 +75,7 @@ onMounted(() => {
 const selectedSession = computed(() => {
     if (selectedKeys.value.length == 0) return;
     const selectedKey = selectedKeys.value[0]
-    const session = sessionList.find((session) => sessionIdentityAsString(session.identity) == selectedKey)
+    const session = sessionList.value.find((session) => sessionIdentityAsString(session.identity) == selectedKey)
     if (session) {
         session.unreadCount = 0
     }
@@ -136,6 +154,9 @@ async function handleSend(type: "xml" | "json" | "text" | "message-chain", text:
         flex: 1 1 0;
         width: 0;
         height: 100%;
+        .more-button {
+            font-size: 18px;
+        }
     }
 }
 </style>
