@@ -4,7 +4,7 @@
 
 精美的IM前端客户端实现，基于vite + vue 3 + ant-design-vue，通过[mirai-reactivity-ws](https://github.com/only52607/mirai-reactivity-ws)对接[mah](https://github.com/project-mirai/mirai-api-http)作为后端。
 
-![logo](.\assets\logo.png)
+![logo](./assets/logo.png)
 
 ## 在线使用
 
