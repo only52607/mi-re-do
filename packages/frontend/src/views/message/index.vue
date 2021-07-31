@@ -11,31 +11,36 @@
         </div>
         <div id="right">
             <chat-screen
-                @send="handleSend"
+                @send="handleSendClick"
                 :session="selectedSession"
                 v-model:pending-text="pendingText"
-                v-model:session-list-collapsed="sessionListCollapsed"
                 v-model:scroll-to-buttom="scrollChatListToButtom"
             >
                 <template #backIcon>
                     <menu-switch v-model:collapsed="sessionListCollapsed" />
                 </template>
                 <template #headerExtra>
-                    <a-button type="text" class="more-button" @click="drawerVisible=!drawerVisible"> 
+                    <a-button type="text" class="more-button">
                         <template #icon>
                             <menu-outlined />
                         </template>
                     </a-button>
                 </template>
-                <template #content>
+                <template #title="{ session }">
+                    <div
+                        @click="drawerVisible = !drawerVisible"
+                        class="session-title"
+                    >{{ getSessionTitle(session) }}</div>
+                </template>
+                <template #subTitle="{ session }">{{ getSessionSubTitle(session) }}</template>
+                <template #content="{ session }">
                     <a-drawer
-                    title="Basic"
-                    placement="right"
-                    :closable="true"
-                    :visible="drawerVisible"
-                    :get-container="false"
-                    :wrap-style="{ position: 'absolute' }"
-                    @close="drawerVisible = false"
+                        placement="right"
+                        :closable="true"
+                        :visible="drawerVisible"
+                        :get-container="false"
+                        :wrap-style="{ position: 'absolute' }"
+                        @close="drawerVisible = false"
                     >
                         <p>Some contents...</p>
                     </a-drawer>
@@ -48,7 +53,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from "vue";
 import SessionList from "@/components/list/SessionList.vue"
-import { sessionIdentityEquals, useCurrentSessionIdentity, useSessionList } from "@/use/session";
+import { Session, sessionIdentityEquals, useCurrentSessionIdentity, useSessionList } from "@/use/session";
 import type { SessionIdentity } from "@/use/session";
 import ChatScreen from "./ChatScreen.vue"
 import { useMiraiApi, messageBuilder, useBotProfile } from "mirai-reactivity-ws";
@@ -88,50 +93,52 @@ const selectedSession = computed(() => {
     return session
 })
 
-function buildMessage(type: "xml" | "json" | "text" | "message-chain", text: string): MessageChain | undefined {
-    switch (type) {
-        case "xml":
-            return [messageBuilder.buildXml(text)]
-        case "json":
-            return [messageBuilder.buildApp(text)]
-        case "text":
-            return [messageBuilder.buildPlain(text)]
-        case "message-chain":
-            return JSON.parse(text) as MessageChain
+const getSessionTitle = (session: Session) => {
+    switch (session.type) {
+        case "friend":
+            return session.contact.nickname
+        case "temp":
+            return session.contact.memberName
+        case "group":
+            return session.contact.name
     }
 }
+
+const getSessionSubTitle = (session: Session) => session.contact.id
 
 async function executeSend(messageChain: MessageChain): Promise<MessageReceipt | undefined> {
     if (selectedSession.value == undefined || miraiApi.value == undefined) return
+    let receipt: MessageReceipt
     switch (selectedSession.value.type) {
         case "friend":
-            return await miraiApi.value.sendFriendMessage(messageChain, selectedSession.value.contact.id)
+            receipt = await miraiApi.value.sendFriendMessage(messageChain, selectedSession.value.contact.id)
+            break
         case "group":
-            return await miraiApi.value.sendGroupMessage(messageChain, selectedSession.value.contact.id)
+            receipt = await miraiApi.value.sendGroupMessage(messageChain, selectedSession.value.contact.id)
+            break
         case "temp":
-            return await miraiApi.value.sendTempMessage(messageChain, selectedSession.value.contact.id, selectedSession.value.contact.group.id)
+            receipt = await miraiApi.value.sendTempMessage(messageChain, selectedSession.value.contact.id, selectedSession.value.contact.group.id)
+            break
     }
+    miraiApi.value.emitEvent({
+        type: "SentMessage",
+        receipt: receipt,
+        bot: botProfile.value as BotProfile,
+        botId: connectionInfo.value?.authentication.qq ?? 0,
+        messageChain: messageChain,
+        targetType: selectedSession.value.type as any,
+        target: selectedSession.value.contact as any
+    })
 }
 
-async function handleSend(type: "xml" | "json" | "text" | "message-chain", text: string) {
-    if (miraiApi.value == undefined) {
-        message.error("连接未就绪")
+async function handleSendClick(messageChain: MessageChain) {
+    if (miraiApi.value == undefined || selectedSession.value == undefined) {
+        message.error("未就绪")
         return
     }
-    const messageChain = buildMessage(type, text)
-    if (messageChain == undefined || selectedSession.value == undefined) return
     try {
         const receipt = await executeSend(messageChain)
         pendingText.value = ""
-        miraiApi.value.emitEvent({
-            type: "SentMessage",
-            receipt: receipt,
-            bot: botProfile.value as BotProfile,
-            botId: connectionInfo.value?.authentication.qq ?? 0,
-            messageChain: messageChain,
-            targetType: selectedSession.value.type as any,
-            target: selectedSession.value.contact as any
-        })
         scrollChatListToButtom.value = true
     } catch {
         message.error("消息发送失败")
@@ -164,5 +171,9 @@ async function handleSend(type: "xml" | "json" | "text" | "message-chain", text:
             font-size: 18px;
         }
     }
+}
+
+.session-title {
+    cursor: pointer;
 }
 </style>

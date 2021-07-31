@@ -1,44 +1,19 @@
 <template>
     <a-page-header
-        v-if="session.type == 'friend'"
-        :title="session.contact.nickname"
-        :sub-title="session.contact.id"
         style="background:#fff;"
-        @back="() => { }"
+        @back="() => {}"
     >
         <template #backIcon>
             <slot name="backIcon"></slot>
         </template>
         <template #extra>
-            <slot name="extra"></slot>
+            <slot :session="session" name="extra"></slot>
         </template>
-    </a-page-header>
-    <a-page-header
-        v-else-if="session.type == 'group'"
-        :title="session.contact.name"
-        :sub-title="session.contact.id"
-        style="background:#fff;"
-        @back="() => { }"
-    >
-        <template #backIcon>
-            <slot name="backIcon"></slot>
+        <template #title>
+            <slot :session="session" name="title"></slot>
         </template>
-        <template #extra>
-            <slot name="extra"></slot>
-        </template>
-    </a-page-header>
-    <a-page-header
-        v-else-if="session.type == 'temp'"
-        :title="session.contact.memberName"
-        :sub-title="session.contact.id"
-        style="background:#fff;"
-        @back="() => { }"
-    >
-        <template #backIcon>
-            <slot name="backIcon"></slot>
-        </template>
-        <template #extra>
-            <slot name="extra"></slot>
+        <template #subTitle>
+            <slot :session="session" name="subTitle"></slot>
         </template>
     </a-page-header>
 </template>

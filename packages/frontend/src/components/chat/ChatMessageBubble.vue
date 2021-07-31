@@ -1,5 +1,6 @@
 <template>
     <div :class="{ receive: !isSend, send: isSend , multi: !isPureImageMessage }">
+        <a-tag v-if="isUndefineMessage"> 不支持的消息 </a-tag>
         <template v-for="item in content">
             <chat-message-content-item @display-image="emitDisplayImage" :message="item" />
         </template>
@@ -26,6 +27,11 @@ const isPureImageMessage = computed(() => {
     if (props.content.length != 2) return false
     const secondMessageType = props.content[1].type
     return secondMessageType == "Image"
+})
+
+const isUndefineMessage = computed(() => {
+    if (props.content.length != 1) return false
+    return props.content[0].type == "Source"
 })
 
 </script>

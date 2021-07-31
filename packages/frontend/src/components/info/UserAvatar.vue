@@ -10,7 +10,7 @@ import { defineProps } from 'vue';
 import type { Optional } from '@/types/utility';
 
 defineProps<{
-    nickname: Optional<string>,
+    nickname?: Optional<string>,
     userId: number
 }>()
 

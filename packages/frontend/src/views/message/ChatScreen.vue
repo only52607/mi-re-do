@@ -14,8 +14,14 @@
                     <template #backIcon>
                         <slot name="backIcon"></slot>
                     </template>
-                    <template #extra>
-                        <slot name="headerExtra"></slot>
+                    <template #extra="{ session }">
+                        <slot name="headerExtra" :session="session"></slot>
+                    </template>
+                    <template #title="{ session }">
+                        <slot name="title" :session="session"></slot>
+                    </template>
+                    <template #subTitle="{ session }">
+                        <slot name="subTitle" :session="session"></slot>
                     </template>
                 </session-header>
             </div>
@@ -36,21 +42,21 @@
                     />
                 </div>
                 <div id="send-area" justify="end" style="padding: 5px;">
-                    <a-dropdown-button @click="$emit('send', 'text', pendingText)" type="primary">
+                    <a-dropdown-button @click="emitSendEvent('text')" type="primary">
                         发送
                         <template #overlay>
                             <a-menu>
                                 <a-menu-item
                                     key="message-chain"
-                                    @click="$emit('send', 'message-chain', pendingText)"
+                                    @click="emitSendEvent('message-chain')"
                                 >以MessageChain标准形式发送</a-menu-item>
                                 <a-menu-item
                                     key="xml"
-                                    @click="$emit('send', 'xml', pendingText)"
+                                    @click="emitSendEvent('xml')"
                                 >以XML消息发送</a-menu-item>
                                 <a-menu-item
                                     key="json"
-                                    @click="$emit('send', 'json', pendingText)"
+                                    @click="emitSendEvent('json')"
                                 >以JSON消息发送</a-menu-item>
                             </a-menu>
                         </template>
@@ -59,7 +65,7 @@
                         </template>
                     </a-dropdown-button>
                 </div>
-                <slot name="content"></slot>
+                <slot name="content" :session="session"></slot>
             </div>
         </div>
     </template>
@@ -72,21 +78,41 @@ import type { Session } from '@/use';
 import ChatMessageList from "@/components/chat/ChatMessageList.vue"
 import { DownOutlined } from '@ant-design/icons-vue';
 import SessionHeader from "./SessionHeader.vue"
+import { messageBuilder } from "mirai-reactivity-ws";
 
-defineProps<{
+const props = defineProps<{
     session: Optional<Session>,
     pendingText: string,
     scrollToButtom: boolean
 }>()
 
 const emits = defineEmits<{
-    (event: 'send', type: "text" | "xml" | "json" | "message-chain", text: string): void
+    (event: 'send', MessageChain): void
     (event: 'update:pending-text', text: string): void
     (event: 'update:scroll-to-buttom', value: boolean): VideoFacingModeEnum
 }>()
 
 const emitUpdatePendingText = (text: string) => emits('update:pending-text', text)
 const emitUpdateScrollToButtom = (value: boolean) => emits('update:scroll-to-buttom', value)
+
+function buildMessage(type: "xml" | "json" | "text" | "message-chain", text: string): MessageChain | undefined {
+    switch (type) {
+        case "xml":
+            return [messageBuilder.buildXml(text)]
+        case "json":
+            return [messageBuilder.buildApp(text)]
+        case "text":
+            return [messageBuilder.buildPlain(text)]
+        case "message-chain":
+            return JSON.parse(text) as MessageChain
+    }
+}
+
+function emitSendEvent(type: "xml" | "json" | "text" | "message-chain") {
+    const messageChain = buildMessage(type, props.pendingText)
+    if (!messageChain) return
+    emits("send", messageChain)
+}
 
 </script>
 

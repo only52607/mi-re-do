@@ -66,9 +66,6 @@ defineProps<{
     sessionList: SessionList
 }>()
 
-// document.oncontextmenu = (event) => {
-// }
-
 </script>
   
 <style lang="less" scoped>
