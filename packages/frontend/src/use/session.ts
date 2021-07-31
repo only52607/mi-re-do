@@ -132,9 +132,9 @@ export function stringAsSessionIdentity(
   return [parseInt(parts[0]), parts[1] as SessionType];
 }
 
-export function findSessionInSessionListByIdentityString(identityString: string) {
+export function findSessionInSessionListByIdentityString(identityString: string): { index: number, session:Session | undefined } {
   const index = globalSessionList.value.findIndex((session) => sessionIdentityAsString(session.identity) == identityString)
-  if (index < 0) return undefined
+  if (index < 0) return { index, session: undefined}
   return { index, session: globalSessionList.value[index]}
 }
 
