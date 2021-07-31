@@ -1,16 +1,25 @@
 <template>
-    <div :class="{ receive: !isSend, send: isSend , multi: !isPureImageMessage }">
-        <a-tag v-if="isUndefineMessage"> 不支持的消息 </a-tag>
-        <template v-for="item in content">
-            <chat-message-content-item @display-image="emitDisplayImage" :message="item" />
+    <a-popover v-model:visible="popoverVisible" trigger="contextmenu">
+        <template #content>
+            <a-menu :selectable="false">
+                <a-menu-item @click="displayMessageChain">显示 MessageChain</a-menu-item>
+            </a-menu>
         </template>
-    </div>
+        <div :class="{ receive: !isSend, send: isSend, multi: !isPureImageMessage }">
+            <a-tag v-if="isUndefineMessage">不支持的消息</a-tag>
+            <template v-for="item in content">
+                <chat-message-content-item @display-image="emitDisplayImage" :message="item" />
+            </template>
+        </div>
+    </a-popover>
 </template>
 
 <script setup lang="ts">
 import type { MessageChain } from 'mirai-reactivity-ws';
-import { computed, defineProps } from 'vue';
+import { computed, defineProps, ref } from 'vue';
 import ChatMessageContentItem from "./ChatMessageContentItem.vue"
+import { Modal } from 'ant-design-vue';
+
 const props = defineProps<{
     content: MessageChain,
     isSend?: boolean
@@ -24,6 +33,7 @@ function emitDisplayImage(url: string) {
 }
 
 const isPureImageMessage = computed(() => {
+    if (props.content.length == 1) return props.content[0].type == "Image"
     if (props.content.length != 2) return false
     const secondMessageType = props.content[1].type
     return secondMessageType == "Image"
@@ -33,6 +43,15 @@ const isUndefineMessage = computed(() => {
     if (props.content.length != 1) return false
     return props.content[0].type == "Source"
 })
+
+const popoverVisible = ref(false)
+
+function displayMessageChain() {
+    popoverVisible.value = false
+    Modal.confirm({
+        content: JSON.stringify(props.content)
+    })
+}
 
 </script>
 
@@ -80,5 +99,4 @@ const isUndefineMessage = computed(() => {
 .multi {
     padding: 5px 8px;
 }
-
 </style>

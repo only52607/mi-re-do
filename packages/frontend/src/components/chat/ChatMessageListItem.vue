@@ -55,24 +55,27 @@
     </div>
 </template>
 
-
-
 <script setup lang="ts">
 import { defineProps } from 'vue';
 import UserAvatar from "@/components/info/UserAvatar.vue"
 import ChatMessageBubble from "./ChatMessageBubble.vue"
 import type { Event } from 'mirai-reactivity-ws/dist/types/event';
 import MemberTag from "@/components/info/MemberTag.vue"
+import { MessageChain } from 'mirai-reactivity-ws';
 
 defineProps<{
     event: Event
 }>()
+
 const emits = defineEmits<{
     (event: "display-image", url: string): void
+    (event: "bubble-context-menu", content: MessageChain): void
 }>()
+
 function emitDisplayImage(url: string) {
     emits("display-image", url)
 }
+
 </script>
 
 

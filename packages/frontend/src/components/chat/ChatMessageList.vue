@@ -1,7 +1,10 @@
 <template>
     <div id="chat-list">
         <template v-for="event in session.events">
-            <chat-message-list-item @display-image="displayImage" :event="event"></chat-message-list-item>
+            <chat-message-list-item
+                @display-image="displayImage"
+                :event="event"
+            ></chat-message-list-item>
         </template>
         <image-modal
             :visible="imageModalVisible"
@@ -17,6 +20,7 @@ import { defineProps, nextTick, onMounted, ref, watch, watchEffect } from 'vue';
 import type { Session } from '@/use';
 import ChatMessageListItem from "./ChatMessageListItem.vue"
 import ImageModal from "@/components/modal/ImageModal.vue"
+import { useMouse } from '@vueuse/core';
 const imageModalVisible = ref(false)
 const imageUrl = ref("")
 
@@ -74,4 +78,11 @@ function displayImage(url: string) {
     height: 100%;
     width: 100%;
 }
+
+#chat-bubble-context-menu {
+    position: absolute;
+    z-index: 1;
+    display: block;
+}
+
 </style>
