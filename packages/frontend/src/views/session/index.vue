@@ -64,11 +64,10 @@
                             :loading="memberListLoading"
                             :grid="{ gutter: 10, xs: 1, sm: 1, md: 2, lg: 2, xl: 3, xxl: 1 }"
                         ></member-list>
-                        <member-desciption :member="currentMember"/>
+                        <member-desciption v-if="session.type == 'temp'" :member="currentMember" />
                     </a-drawer>
                 </template>
             </chat-screen>
-            
         </div>
     </div>
 </template>
