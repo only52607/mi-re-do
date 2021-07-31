@@ -20,11 +20,20 @@
                     <menu-switch v-model:collapsed="sessionListCollapsed" />
                 </template>
                 <template #headerExtra>
-                    <a-button type="text" class="more-button">
-                        <template #icon>
-                            <menu-outlined />
+                    <a-popover placement="bottom" trigger="click">
+                        <template #content>
+                            <a-menu :selectable="false">
+                                <a-menu-item>
+                                    <span @click="handleRemoveSession">删除此会话</span>
+                                </a-menu-item>
+                            </a-menu>
                         </template>
-                    </a-button>
+                        <a-button type="text" class="more-button">
+                            <template #icon>
+                                <menu-outlined />
+                            </template>
+                        </a-button>
+                    </a-popover>
                 </template>
                 <template #title="{ session }">
                     <div
@@ -51,7 +60,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, onMounted, ref, watch, createVNode } from "vue";
 import SessionList from "@/components/list/SessionList.vue"
 import { Session, sessionIdentityEquals, useCurrentSessionIdentity, useSessionList } from "@/use/session";
 import type { SessionIdentity } from "@/use/session";
@@ -62,7 +71,8 @@ import { message } from "ant-design-vue";
 import { useConnectionInfo } from "@/use";
 import { sessionIdentityAsString } from '@/use/session';
 import { useRoute } from "vue-router";
-import { MenuOutlined } from '@ant-design/icons-vue';
+import { MenuOutlined, ExclamationCircleOutlined } from '@ant-design/icons-vue';
+import { Modal } from 'ant-design-vue';
 
 const sessionList = useSessionList()
 const { botProfile } = useBotProfile()
@@ -143,6 +153,26 @@ async function handleSendClick(messageChain: MessageChain) {
     } catch {
         message.error("消息发送失败")
     }
+}
+
+function removeCurrentSession() {
+    if (selectedSession.value == undefined) return
+    const index = sessionList.value.findIndex((session) =>  sessionIdentityEquals(session.identity, selectedSession.value.identity))
+    if (index < 0) return
+    selectedKeys.value = []
+    sessionList.value.splice(index, 1)
+    message.success("已删除")
+}
+
+function handleRemoveSession() {
+    Modal.confirm({
+        title: '确认删除该聊天以及该聊天的所有聊天记录?',
+        icon: createVNode(ExclamationCircleOutlined),
+        content: '此操作不可逆!',
+        onOk() {
+            removeCurrentSession()
+        },
+    });
 }
 
 </script>
