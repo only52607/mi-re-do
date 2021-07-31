@@ -1,18 +1,18 @@
 <template>
-    <div :class="{ content: true, multi: !isPureImageMessage }">
+    <div :class="{ receive: !isSend, send: isSend , multi: !isPureImageMessage }">
         <template v-for="item in content">
             <chat-message-content-item @display-image="emitDisplayImage" :message="item" />
         </template>
     </div>
 </template>
 
-
 <script setup lang="ts">
 import type { MessageChain } from 'mirai-reactivity-ws';
 import { computed, defineProps } from 'vue';
 import ChatMessageContentItem from "./ChatMessageContentItem.vue"
 const props = defineProps<{
-    content: MessageChain
+    content: MessageChain,
+    isSend?: boolean
 }>()
 const emits = defineEmits<{
     (event: "display-image", url: string): void
@@ -32,9 +32,18 @@ const isPureImageMessage = computed(() => {
 
 
 <style lang="less" scoped>
-.content {
+.receive {
+    background-color: #fff;
+    display: inline-block;
+    border-radius: 5px;
+    margin: 0px 0 0px 15px;
+    position: relative;
+    max-width: 80%;
+    word-break: break-all;
+}
+
+.send {
     background-color: lighten(@primary-color, 4%);
-    // padding: 5px 8px;
     display: inline-block;
     border-radius: 5px;
     margin: 0px 15px 0px 0px;
@@ -43,11 +52,17 @@ const isPureImageMessage = computed(() => {
     max-width: 80%;
     word-break: break-all;
 }
-.multi {
-    padding: 5px 8px;
+
+.receive::after {
+    content: "";
+    border: 8px solid #ffffff00;
+    border-right: 8px solid #fff;
+    position: absolute;
+    top: 6px;
+    left: -16px;
 }
 
-.content::after {
+.send::after {
     content: "";
     border: 8px solid #ffffff00;
     border-left: 8px solid lighten(@primary-color, 4%);
@@ -55,4 +70,9 @@ const isPureImageMessage = computed(() => {
     top: 6px;
     right: -16px;
 }
+
+.multi {
+    padding: 5px 8px;
+}
+
 </style>

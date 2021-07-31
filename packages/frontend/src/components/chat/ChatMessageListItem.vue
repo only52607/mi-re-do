@@ -3,10 +3,11 @@
         <user-avatar id="avatar" :user-id="event.botId" :nickname="event.bot.nickname" />
         <div id="bubble-and-name" style="text-align: right;">
             <div style="margin-right: 15px;">{{ event.bot.nickname }}</div>
-            <chat-message-bubble-send
+            <chat-message-bubble
                 @display-image="emitDisplayImage"
                 :content="event.messageChain"
-            ></chat-message-bubble-send>
+                :is-send="true"
+            ></chat-message-bubble>
         </div>
     </div>
     <div v-else id="item">
@@ -14,10 +15,10 @@
             <user-avatar id="avatar" :user-id="event.sender.id" :nickname="event.sender.nickname" />
             <div id="bubble-and-name">
                 <div style="margin-left: 15px;">{{ event.sender.nickname }}</div>
-                <chat-message-bubble-receive
+                <chat-message-bubble
                     @display-image="emitDisplayImage"
                     :content="event.messageChain"
-                ></chat-message-bubble-receive>
+                ></chat-message-bubble>
             </div>
         </template>
         <template v-if="event.type == 'GroupMessage'">
@@ -31,10 +32,10 @@
                     <member-tag :member="event.sender" />
                     {{ event.sender.memberName }}
                 </div>
-                <chat-message-bubble-receive
+                <chat-message-bubble
                     @display-image="emitDisplayImage"
                     :content="event.messageChain"
-                ></chat-message-bubble-receive>
+                ></chat-message-bubble>
             </div>
         </template>
         <template v-if="event.type == 'TempMessage'">
@@ -45,10 +46,10 @@
             />
             <div id="bubble-and-name">
                 <div style="margin-left: 15px;">{{ event.sender.memberName }}</div>
-                <chat-message-bubble-receive
+                <chat-message-bubble
                     @display-image="emitDisplayImage"
                     :content="event.messageChain"
-                ></chat-message-bubble-receive>
+                ></chat-message-bubble>
             </div>
         </template>
     </div>
@@ -59,8 +60,7 @@
 <script setup lang="ts">
 import { defineProps } from 'vue';
 import UserAvatar from "@/components/info/UserAvatar.vue"
-import ChatMessageBubbleReceive from "./ChatMessageBubbleReceive.vue"
-import ChatMessageBubbleSend from "./ChatMessageBubbleSend.vue"
+import ChatMessageBubble from "./ChatMessageBubble.vue"
 import type { Event } from 'mirai-reactivity-ws/dist/types/event';
 import MemberTag from "@/components/info/MemberTag.vue"
 
