@@ -51,7 +51,7 @@
                         :wrap-style="{ position: 'absolute' }"
                         @close="drawerVisible = false"
                     >
-                        <p>Some contents...</p>
+                        <!-- <user-description v-if="session.type=='friend'" :user-id="session.contact.id"/> -->
                     </a-drawer>
                 </template>
             </chat-screen>
@@ -62,7 +62,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch, createVNode } from "vue";
 import SessionList from "@/components/list/SessionList.vue"
-import { Session, sessionIdentityEquals, useCurrentSessionIdentity, useSessionList } from "@/use/session";
+import { findSessionInSessionListByIdentityString, Session, sessionIdentityEquals, useCurrentSessionIdentity, useSessionList } from "@/use/session";
 import type { SessionIdentity } from "@/use/session";
 import ChatScreen from "./ChatScreen.vue"
 import { useMiraiApi, messageBuilder, useBotProfile } from "mirai-reactivity-ws";
@@ -73,6 +73,7 @@ import { sessionIdentityAsString } from '@/use/session';
 import { useRoute } from "vue-router";
 import { MenuOutlined, ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { Modal } from 'ant-design-vue';
+import UserDescription from '../../components/info/UserDescription.vue';
 
 const sessionList = useSessionList()
 const { botProfile } = useBotProfile()
@@ -94,8 +95,7 @@ onMounted(() => {
 
 const selectedSession = computed(() => {
     if (selectedKeys.value.length == 0) return;
-    const selectedKey = selectedKeys.value[0]
-    const session = sessionList.value.find((session) => sessionIdentityAsString(session.identity) == selectedKey)
+    const { session } = findSessionInSessionListByIdentityString(selectedKeys.value[0])
     if (session) {
         session.unreadCount = 0
     }
@@ -157,7 +157,7 @@ async function handleSendClick(messageChain: MessageChain) {
 
 function removeCurrentSession() {
     if (selectedSession.value == undefined) return
-    const index = sessionList.value.findIndex((session) =>  sessionIdentityEquals(session.identity, selectedSession.value.identity))
+    const index = sessionList.value.findIndex((session) => sessionIdentityEquals(session.identity, selectedSession.value.identity))
     if (index < 0) return
     selectedKeys.value = []
     sessionList.value.splice(index, 1)
