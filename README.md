@@ -1,6 +1,7 @@
 # MI-RE-DO
 [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lerna.js.org/)
 [![GitHub](https://img.shields.io/github/license/only52607/mi-re-do)](https://github.com/only52607/mi-re-do)
+[![QQ Group](https://img.shields.io/badge/QQ%20Group-120408574-12B7F5?logo=tencent-qq)](https://jq.qq.com/?_wv=1027&k=6ab9dMlS)
 
 精美的IM前端客户端实现，基于vite + vue 3 + ant-design-vue，通过[mirai-reactivity-ws](https://github.com/only52607/mirai-reactivity-ws)对接[mah](https://github.com/project-mirai/mirai-api-http)作为后端。
 
