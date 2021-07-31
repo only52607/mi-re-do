@@ -23,12 +23,22 @@ export default defineConfig({
       display: "standalone",
       background_color: "#ffffff",
       lang: "cn",
-      scope: "/",
+      scope: "/mi-re-do/",
       description: "轻量级IM前端客户端",
+      theme_color: '#1abc9c',
       icons: [{
-        src: "./favicon.ico",
-        size: "48*48"
-      }]
+        src: "./logo.png",
+        sizes: "256x256",
+        type: "image/png",
+        purpose: "any"
+      },
+      {
+        src: "./logo_144.png",
+        sizes: "144x144",
+        type: "image/png",
+        purpose: "any"
+      }
+    ]
     }
   })],
   resolve: {

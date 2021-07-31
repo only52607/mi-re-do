@@ -8,14 +8,7 @@ import "@/views/pwa/ReloadPrompt.vue"
 import { registerSW } from 'virtual:pwa-register'
 
 (window as any)['global'] = window;
-registerSW({
-    onNeedRefresh() {
-        // show a prompt to user
-    },
-    onOfflineReady() {
-        // show a ready to work offline to user
-    },
-})
+registerSW()
 const app = createApp(App)
 app.use(router)
 app.use(Antd)
