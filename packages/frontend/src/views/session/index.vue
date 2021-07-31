@@ -37,7 +37,7 @@
                 </template>
                 <template #title="{ session }">
                     <div
-                        @click="drawerVisible = !drawerVisible"
+                        @click="switchExtraDrawer"
                         class="session-title"
                     >{{ getSessionTitle(session) }}</div>
                 </template>
@@ -50,35 +50,52 @@
                         :get-container="false"
                         :wrap-style="{ position: 'absolute' }"
                         @close="drawerVisible = false"
+                        :width="500"
                     >
-                        <!-- <user-description v-if="session.type=='friend'" :user-id="session.contact.id"/> -->
+                        <user-description
+                            v-if="session.type == 'friend'"
+                            :user-id="session.contact.id"
+                            :profile="currentUserProfile"
+                        />
+                        <member-list
+                            v-if="session.type == 'group'"
+                            @goto-temp-session="gotoTempSession"
+                            :member-list="currentMemberList"
+                            :loading="memberListLoading"
+                            :grid="{ gutter: 10, xs: 1, sm: 1, md: 2, lg: 2, xl: 3, xxl: 1 }"
+                        ></member-list>
+                        <member-desciption :member="currentMember"/>
                     </a-drawer>
                 </template>
             </chat-screen>
+            
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch, createVNode } from "vue";
+import { computed, onMounted, ref, watch, createVNode, ComputedRef } from "vue";
 import SessionList from "@/components/list/SessionList.vue"
-import { findSessionInSessionListByIdentityString, Session, sessionIdentityEquals, useCurrentSessionIdentity, useSessionList } from "@/use/session";
+import { findSessionInSessionListByIdentityString, Session, sessionIdentityEquals, useCurrentSessionIdentity, useSessionList, pushEmptySession } from "@/use/session";
 import type { SessionIdentity } from "@/use/session";
 import ChatScreen from "./ChatScreen.vue"
-import { useMiraiApi, messageBuilder, useBotProfile } from "mirai-reactivity-ws";
+import { useMiraiApi, messageBuilder, useBotProfile, useFriendProfile, Member, useMemberList } from "mirai-reactivity-ws";
 import type { MessageChain, MessageReceipt, BotProfile } from "mirai-reactivity-ws";
 import { message } from "ant-design-vue";
 import { useConnectionInfo } from "@/use";
 import { sessionIdentityAsString } from '@/use/session';
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { MenuOutlined, ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { Modal } from 'ant-design-vue';
-import UserDescription from '../../components/info/UserDescription.vue';
+import UserDescription from '@/components/info/UserDescription.vue';
+import MemberList from "@/components/list/MemberList.vue"
+import MemberDesciption from "@/components/info/MemberDesciption.vue"
 
 const sessionList = useSessionList()
 const { botProfile } = useBotProfile()
 const connectionInfo = useConnectionInfo()
 const route = useRoute()
+const router = useRouter()
 const selectedKeys = ref([] as string[])
 const sessionListCollapsed = ref(false)
 const pendingText = ref("")
@@ -87,13 +104,18 @@ const scrollChatListToButtom = ref(true)
 const drawerVisible = ref(false)
 const currentSessionIdentity = useCurrentSessionIdentity()
 
-onMounted(() => {
+function switchSessionFromRoute() {
     if (route.query["sessionIdentityString"]) {
         selectedKeys.value = [route.query["sessionIdentityString"] as string]
+        drawerVisible.value = false
     }
-})
+}
 
-const selectedSession = computed(() => {
+onMounted(() => switchSessionFromRoute())
+
+watch(() => route.query, () => switchSessionFromRoute())
+
+const selectedSession: ComputedRef<Session | undefined> = computed(() => {
     if (selectedKeys.value.length == 0) return;
     const { session } = findSessionInSessionListByIdentityString(selectedKeys.value[0])
     if (session) {
@@ -173,6 +195,40 @@ function handleRemoveSession() {
             removeCurrentSession()
         },
     });
+}
+
+const currentUserId: Ref<number | undefined> = ref()
+const { profile: currentUserProfile } = useFriendProfile(currentUserId)
+
+const currentGroupId: Ref<number | undefined> = ref()
+const { members: currentMemberList, state: memberListState } = useMemberList(currentGroupId)
+const memberListLoading = computed(() => memberListState.value != 'done')
+
+const currentMember: Ref<Member | undefined> = ref()
+
+function switchExtraDrawer() {
+    if (!selectedSession.value) return
+    if (drawerVisible.value) {
+        drawerVisible.value = false
+        return
+    }
+    switch (selectedSession.value.type) {
+        case "friend":
+            currentUserId.value = selectedSession.value.contact.id
+            break;
+        case "group":
+            currentGroupId.value = selectedSession.value.contact.id
+            break;
+        case "temp":
+            currentMember.value = selectedSession.value.contact
+            break;
+    }
+    drawerVisible.value = true
+}
+
+function gotoTempSession(member: Member) {
+    pushEmptySession("temp", member)
+    router.push({ name: "session", query: { sessionIdentityString: sessionIdentityAsString([member.id, "temp"]) } })
 }
 
 </script>
