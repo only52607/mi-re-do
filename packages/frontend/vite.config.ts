@@ -8,6 +8,7 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['vue-demi']
   },
+  base: "/mi-re-do/",
   plugins: [vue({
     script: {
       refSugar: true
