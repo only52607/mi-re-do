@@ -1,5 +1,6 @@
 <template>
-    <a-empty v-if="!memberList" />
+    <a-spin v-if="loading" />
+    <a-empty v-else-if="!memberList" />
     <a-list
         v-else
         style="margin: 5px;"
@@ -11,10 +12,7 @@
             <a-list-item>
                 <a-popover trigger="click">
                     <template #content>
-                        <p>{{ member.memberName }}</p>
-                        <p>
-                            <member-tag :member="member" />
-                        </p>
+                        <member-desciption :tiny="true" :member="member"/>
                         <a-divider></a-divider>
                         <a-button
                             type="primary"
@@ -54,6 +52,7 @@ import type { Member } from "mirai-reactivity-ws"
 import type { Optional } from '@/types/utility';
 import UserAvatar from "@/components/info/UserAvatar.vue"
 import MemberTag from "@/components/info/MemberTag.vue"
+import MemberDesciption from "@/components/info/MemberDesciption.vue"
 
 defineProps<{
     memberList: Optional<Member[]>,
@@ -67,4 +66,5 @@ defineEmits<{
 </script>
   
 <style lang="less">
+
 </style>
