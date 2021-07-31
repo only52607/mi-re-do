@@ -50,14 +50,8 @@
                                     key="message-chain"
                                     @click="emitSendEvent('message-chain')"
                                 >以MessageChain标准形式发送</a-menu-item>
-                                <a-menu-item
-                                    key="xml"
-                                    @click="emitSendEvent('xml')"
-                                >以XML消息发送</a-menu-item>
-                                <a-menu-item
-                                    key="json"
-                                    @click="emitSendEvent('json')"
-                                >以JSON消息发送</a-menu-item>
+                                <a-menu-item key="xml" @click="emitSendEvent('xml')">以XML消息发送</a-menu-item>
+                                <a-menu-item key="json" @click="emitSendEvent('json')">以JSON消息发送</a-menu-item>
                             </a-menu>
                         </template>
                         <template #icon>
@@ -104,7 +98,9 @@ function buildMessage(type: "xml" | "json" | "text" | "message-chain", text: str
         case "text":
             return [messageBuilder.buildPlain(text)]
         case "message-chain":
-            return JSON.parse(text) as MessageChain
+            const result = JSON.parse(text)
+            if (result instanceof Array) return MessageChain
+            return [result] as MessageChain
     }
 }
 
