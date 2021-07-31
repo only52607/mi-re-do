@@ -1,1 +1,1 @@
-{"name":"MI-RE-DO","short_name":"MRD","start_url":".","display":"standalone","background_color":"#ffffff","lang":"cn","scope":"/","description":"轻量级IM前端客户端","icons":[{"src":"./favicon.ico","size":"48*48"}]}
+{"name":"MI-RE-DO","short_name":"MRD","start_url":".","display":"standalone","background_color":"#ffffff","lang":"cn","scope":"/mi-re-do/","description":"轻量级IM前端客户端","icons":[{"src":"./logo.png","size":"256*256","type":"image/png"}]}
