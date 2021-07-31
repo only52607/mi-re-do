@@ -73,12 +73,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch, createVNode, ComputedRef } from "vue";
+import { computed, onMounted, ref, watch, createVNode } from "vue";
+import type { ComputedRef, Ref } from "vue";
 import SessionList from "@/components/list/SessionList.vue"
-import { findSessionInSessionListByIdentityString, Session, sessionIdentityEquals, useCurrentSessionIdentity, useSessionList, pushEmptySession } from "@/use/session";
+import { findSessionInSessionListByIdentityString, sessionIdentityEquals, useCurrentSessionIdentity, useSessionList, pushEmptySession } from "@/use/session";
+import type { Session } from "@/use/session";
 import type { SessionIdentity } from "@/use/session";
 import ChatScreen from "./ChatScreen.vue"
-import { useMiraiApi, messageBuilder, useBotProfile, useFriendProfile, Member, useMemberList } from "mirai-reactivity-ws";
+import { useMiraiApi, messageBuilder, useBotProfile, useFriendProfile, useMemberList } from "mirai-reactivity-ws";
+import type { Member } from "mirai-reactivity-ws"
 import type { MessageChain, MessageReceipt, BotProfile } from "mirai-reactivity-ws";
 import { message } from "ant-design-vue";
 import { useConnectionInfo } from "@/use";
@@ -137,7 +140,7 @@ const getSessionTitle = (session: Session) => {
 
 const getSessionSubTitle = (session: Session) => session.contact.id
 
-async function executeSend(messageChain: MessageChain): Promise<MessageReceipt | undefined> {
+async function executeSend(messageChain: MessageChain) {
     if (selectedSession.value == undefined || miraiApi.value == undefined) return
     let receipt: MessageReceipt
     switch (selectedSession.value.type) {
@@ -151,6 +154,7 @@ async function executeSend(messageChain: MessageChain): Promise<MessageReceipt |
             receipt = await miraiApi.value.sendTempMessage(messageChain, selectedSession.value.contact.id, selectedSession.value.contact.group.id)
             break
     }
+    if (!receipt) throw Error("unknown session type")
     miraiApi.value.emitEvent({
         type: "SentMessage",
         receipt: receipt,
@@ -178,7 +182,7 @@ async function handleSendClick(messageChain: MessageChain) {
 
 function removeCurrentSession() {
     if (selectedSession.value == undefined) return
-    const index = sessionList.value.findIndex((session) => sessionIdentityEquals(session.identity, selectedSession.value.identity))
+    const index = sessionList.value.findIndex((session) => sessionIdentityEquals(session.identity, selectedSession.value!.identity))
     if (index < 0) return
     selectedKeys.value = []
     sessionList.value.splice(index, 1)

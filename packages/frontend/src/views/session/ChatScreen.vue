@@ -73,6 +73,7 @@ import ChatMessageList from "@/components/chat/ChatMessageList.vue"
 import { DownOutlined } from '@ant-design/icons-vue';
 import SessionHeader from "./SessionHeader.vue"
 import { messageBuilder } from "mirai-reactivity-ws";
+import type { MessageChain } from "mirai-reactivity-ws";
 
 const props = defineProps<{
     session: Optional<Session>,
@@ -81,7 +82,7 @@ const props = defineProps<{
 }>()
 
 const emits = defineEmits<{
-    (event: 'send', MessageChain): void
+    (event: 'send', content: MessageChain): void
     (event: 'update:pending-text', text: string): void
     (event: 'update:scroll-to-buttom', value: boolean): VideoFacingModeEnum
 }>()
@@ -99,7 +100,7 @@ function buildMessage(type: "xml" | "json" | "text" | "message-chain", text: str
             return [messageBuilder.buildPlain(text)]
         case "message-chain":
             const result = JSON.parse(text)
-            if (result instanceof Array) return MessageChain
+            if (result instanceof Array) return result as MessageChain
             return [result] as MessageChain
     }
 }

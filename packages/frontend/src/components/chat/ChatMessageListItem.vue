@@ -61,7 +61,7 @@ import UserAvatar from "@/components/info/UserAvatar.vue"
 import ChatMessageBubble from "./ChatMessageBubble.vue"
 import type { Event } from 'mirai-reactivity-ws/dist/types/event';
 import MemberTag from "@/components/info/MemberTag.vue"
-import { MessageChain } from 'mirai-reactivity-ws';
+import type { MessageChain } from 'mirai-reactivity-ws';
 
 defineProps<{
     event: Event
