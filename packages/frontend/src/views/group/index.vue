@@ -46,12 +46,12 @@ onMounted(() => emitUpdate())
 function gotoGroupSession() {
     if (!selectedGroup.value) return
     pushEmptySession("group", selectedGroup.value)
-    router.push({ name: "message", query: { sessionIdentityString: sessionIdentityAsString([selectedGroup.value.id, "group"]) } })
+    router.push({ name: "session", query: { sessionIdentityString: sessionIdentityAsString([selectedGroup.value.id, "group"]) } })
 }
 
 function gotoTempSession(contact: Member) {
     pushEmptySession("temp", contact)
-    router.push({ name: "message", query: { sessionIdentityString: sessionIdentityAsString([contact.id, "temp"]) } })
+    router.push({ name: "session", query: { sessionIdentityString: sessionIdentityAsString([contact.id, "temp"]) } })
 }
 
 </script>

@@ -47,7 +47,7 @@ onMounted(() => emitUpdate())
 function gotoFriendSession() {
   if (!selectedFriend.value) return
   pushEmptySession("friend", selectedFriend.value)
-  router.push({ name: "message", query: { sessionIdentityString: sessionIdentityAsString([selectedFriend.value.id, "friend"]) } })
+  router.push({ name: "session", query: { sessionIdentityString: sessionIdentityAsString([selectedFriend.value.id, "friend"]) } })
 }
 
 </script>

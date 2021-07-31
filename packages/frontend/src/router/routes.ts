@@ -23,16 +23,16 @@ const menuRoute = {
       name: "home",
       component: () => import("@/views/home.vue"),
       meta: {
-        title: "控制中心",
+        title: "主页",
         icon: DesktopOutlined,
       },
     },
     {
-      path: "message",
-      name: "message",
-      component: () => import("@/views/message/index.vue"),
+      path: "session",
+      name: "session",
+      component: () => import("@/views/session/index.vue"),
       meta: {
-        title: "消息",
+        title: "会话",
         icon: CommentOutlined,
       },
     },
