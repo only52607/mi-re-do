@@ -9,7 +9,7 @@
 
 ## 在线使用
 
-[MI-RE-DO](http://)
+[MI-RE-DO](https://only52607.github.io/mi-re-do/)
 
 ## 功能
 
@@ -45,9 +45,7 @@ adapterSettings:
 ```
 3. 启动mcl，登录bot
 
-4. 访问在线前端页面，填入连接信息并连接
-
-
+4. 访问在线前端页面[MI-RE-DO](https://only52607.github.io/mi-re-do/)，填入连接信息并连接
 
 ## Build
 
