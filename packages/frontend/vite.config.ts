@@ -19,7 +19,7 @@ export default defineConfig({
     manifest: {
       name: "MI-RE-DO",
       short_name: "MRD",
-      start_url: "/",
+      start_url: ".",
       display: "standalone",
       background_color: "#ffffff",
       lang: "cn",
