@@ -1,6 +1,6 @@
 <template>
     <div v-if="event.type == 'SentMessage'" id="item" style="flex-direction: row-reverse;">
-        <user-avatar id="avatar" :user-id="event.botId" :nickname="event.bot.nickname" />
+        <user-avatar id="avatar" :user-id="getSenderBotId(event)" :nickname="event.bot.nickname" />
         <div id="bubble-and-name" style="text-align: right;">
             <div style="margin-right: 15px;">{{ event.bot.nickname }}</div>
             <chat-message-bubble
@@ -59,7 +59,7 @@
 import { defineProps } from 'vue';
 import UserAvatar from "@/components/info/UserAvatar.vue"
 import ChatMessageBubble from "./ChatMessageBubble.vue"
-import type { Event } from 'mirai-reactivity-ws/dist/types/event';
+import type { Event, SentMessageEvent } from 'mirai-reactivity-ws/dist/types/event';
 import MemberTag from "@/components/info/MemberTag.vue"
 import type { MessageChain } from 'mirai-reactivity-ws';
 
@@ -74,6 +74,10 @@ const emits = defineEmits<{
 
 function emitDisplayImage(url: string) {
     emits("display-image", url)
+}
+
+function getSenderBotId(event: SentMessageEvent) {
+    return event.bot.id ?? (event as any).botId
 }
 
 </script>

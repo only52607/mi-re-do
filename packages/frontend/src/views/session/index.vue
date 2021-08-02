@@ -158,8 +158,7 @@ async function executeSend(messageChain: MessageChain) {
     miraiApi.value.emitEvent({
         type: "SentMessage",
         receipt: receipt,
-        bot: botProfile.value as BotProfile,
-        botId: connectionInfo.value?.authentication.qq ?? 0,
+        bot: { ...(botProfile.value as BotProfile), id: connectionInfo.value?.authentication.qq ?? 0},
         messageChain: messageChain,
         targetType: selectedSession.value.type as any,
         target: selectedSession.value.contact as any
