@@ -11,6 +11,10 @@
 
 [MI-RE-DO](https://only52607.github.io/mi-re-do/)
 
+## 应用截图
+
+![logo](./assets/snapshot1.png)
+
 ## 功能
 
 - [x] 对接mirai-console(websocket)后端，启动时自动连接
